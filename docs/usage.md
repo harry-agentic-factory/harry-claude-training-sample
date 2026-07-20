@@ -90,6 +90,27 @@ chaque script (`~/.claude-allow-*`).
 
 ---
 
+## 6. Rules (`.claude/rules/`)
+
+Une rule = des **conventions** en markdown. **Auto-découvertes** (tous les `.md` de `.claude/rules/`,
+récursif) — **aucun `@import` nécessaire**. Deux modes d'activation selon le frontmatter :
+
+- **Sans `paths:`** → chargée **au lancement**, toujours active (même priorité que `CLAUDE.md`).
+- **Avec `paths:`** (globs) → **conditionnelle** : chargée **quand Claude lit/édite un fichier** qui
+  matche (économe en contexte, pas à chaque tool). Globs standard : `**/*.py`, `frontend/src/**`,
+  `**/*.{ts,tsx}`…
+
+Rule ≠ skill : la **rule** se charge (auto/au bon chemin) et *guide* ; la **skill** est un savoir-faire
+appelé à la demande. Duo intéressant : **rule + hook** — la rule explique, le hook empêche.
+
+| Rule | `paths:` | Activation |
+|---|---|---|
+| `sql-safety.md` | `backend/**/*.py` | SQL paramétré — quand on touche le back |
+| `frontend-data.md` | `frontend/src/**` | réseau via `api.js` — quand on touche le front |
+| `docker-images.md` | `**/Dockerfile`, compose | images pinnées, pas de secret — Docker |
+| `secrets.md` | — | **toujours** — double le hook `block-secret-exposure` |
+| `git-hygiene.md` | — | **toujours** — commits + pas de push `main` + archivage > suppression |
+
 ## Cycle complet (exemple exécutable)
 
 ```

@@ -33,6 +33,8 @@ Orchestré par `docker-compose.yml`. Contrat d'API et structure détaillés dans
 - **Skills** ([`.claude/skills/`](.claude/skills/)) : `python-api`, `react-ui`, `local-deploy`, `docker-deploy`.
 - **MCP** ([`.mcp.json`](.mcp.json)) : `playwright` (recette UI), `github` (PR/CI).
 - **Hooks** ([`.claude/hooks/`](.claude/hooks/)) : bloquent push `main` et exposition de secrets.
+- **Rules** ([`.claude/rules/`](.claude/rules/)) : conventions **auto-découvertes** — toujours actives
+  (`secrets`, `git-hygiene`) ou ciblées par chemin (`sql-safety`, `frontend-data`, `docker-images`).
 
 → Détail d'utilisation : [docs/usage.md](docs/usage.md).
 
