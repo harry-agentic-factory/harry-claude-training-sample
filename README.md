@@ -8,6 +8,10 @@ Le vrai sujet, c'est le dossier **[`.claude/`](.claude/)** : un exemple complet 
 Claude Code (commands, agents, skills, settings, hook, MCP) sur lequel la fiche pointe et dont elle
 cite des extraits.
 
+📖 **Brain du projet** (doc détaillée) : [`docs/`](docs/) — [fonctionnel](docs/functional.md) ·
+[technique + contrat d'API](docs/technical.md) · [CI/CD & déploiement](docs/ci-cd.md) ·
+[**utiliser le harness** (commands, agents, comment les lancer)](docs/usage.md). Entrée : [`CLAUDE.md`](CLAUDE.md).
+
 ## Ce que ce repo illustre
 
 | Brique | Où | Ce qu'on y voit |

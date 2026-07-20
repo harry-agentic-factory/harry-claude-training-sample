@@ -1,40 +1,57 @@
-# CLAUDE.md — Todo app (support de formation Claude Code)
+# CLAUDE.md — Todo app (bac à sable de formation Claude Code)
 
-> Repo **pédagogique** : une petite app todo (React + FastAPI, Docker, GitHub Actions) dont le
-> vrai sujet est le dossier [`.claude/`](.claude/) — un exemple **complet et runnable** de harness
-> Claude Code cité par la fiche « Prise en main de Claude ».
+> Fichier **chargé à chaque session** : il reste **court** et sert d'**index**. Le détail vit dans le
+> brain [`docs/`](docs/). Support de la fiche « Prise en main de Claude » (Harington Tech).
 
-## Architecture
+## Ce qu'est ce dépôt
 
-- **backend/** — API FastAPI (Python 3.12), persistance SQLite. Endpoints CRUD `/todos`, `/health`.
-- **frontend/** — SPA React (Vite), servie par nginx. Appels API centralisés dans `src/api.js`.
-- **docker-compose.yml** — lance front (:8080) + back (:8000).
-- **.github/workflows/** — `ci.yml` (tests+build sur PR) · `deploy.yml` (build→GHCR→VM, **illustratif**).
+Une petite app **todo** (React + FastAPI, Docker, GitHub Actions) dont le vrai sujet est le dossier
+[`.claude/`](.claude/) : un exemple **complet et runnable** de harness Claude Code (commands, agents,
+skills, hooks, MCP). L'app est minimale **exprès** — l'intérêt est la méthode.
 
-## Conventions (voir les skills)
+## Le brain (source de vérité détaillée)
 
-- Backend → [`.claude/skills/python-api`](.claude/skills/python-api/SKILL.md) : controller mince,
-  DTO Pydantic, erreurs via `HTTPException`, tout endpoint testé (`pytest -q`).
-- Frontend → [`.claude/skills/react-ui`](.claude/skills/react-ui/SKILL.md) : `fetch` uniquement dans
-  `src/api.js`, URL via `VITE_API_URL`, a11y.
-- Déploiement → [`.claude/skills/docker-deploy`](.claude/skills/docker-deploy/SKILL.md).
+| Doc | Contenu |
+|---|---|
+| [docs/functional.md](docs/functional.md) | Présentation fonctionnelle : quoi / pourquoi / qui, parcours utilisateur, périmètre |
+| [docs/technical.md](docs/technical.md) | Architecture, **contrat d'API**, structure back/front, config & env |
+| [docs/ci-cd.md](docs/ci-cd.md) | Conteneurs, CI, CD (illustratif), déploiement local vs remote, rollback |
+| [docs/usage.md](docs/usage.md) | **Comment marchent et comment lancer** les commands, agents, skills, MCP, hooks |
+| [docs/features/](docs/features/) | Features cadrées (`/scope` + `/spec`) — ex. `filtre-taches.md` |
 
-## Cycle de travail
+## Architecture (résumé)
 
-`/scope <idée>` → `/spec <story>` → `/implement` → `/test` → agent `reviewer` → agent `deployer`.
-Recette UI autonome : agent `tester` (via MCP Playwright).
+`frontend` React/Vite servi par nginx (:8080) → appelle `backend` FastAPI + SQLite (:8000).
+Orchestré par `docker-compose.yml`. Contrat d'API et structure détaillés dans
+[docs/technical.md](docs/technical.md).
 
-## Garde-fous
+## Le harness en un coup d'œil
 
-- **Secrets** : jamais en clair, jamais loggés ; via variables d'env / GitHub Secrets.
-- **Branches protégées** : un hook `PreToolUse` ([`.claude/hooks/block-protected-branch.sh`](.claude/hooks/block-protected-branch.sh))
-  **bloque** tout `git push` vers `main`/`master`/`production`. On passe par une PR.
-- **Commits** : Conventional Commits. Ne pas modifier l'auth ni les workflows sans demande explicite.
+- **Commands** ([`.claude/commands/`](.claude/commands/)) : `/scope` → `/spec` → `/implement` → `/test`.
+- **Agents** ([`.claude/agents/`](.claude/agents/)) : `reviewer` (lecture seule), `tester` (Playwright),
+  `deployer` (**mode `local`/`remote` donné à l'appel** → charge la skill correspondante).
+- **Skills** ([`.claude/skills/`](.claude/skills/)) : `python-api`, `react-ui`, `local-deploy`, `docker-deploy`.
+- **MCP** ([`.mcp.json`](.mcp.json)) : `playwright` (recette UI), `github` (PR/CI).
+- **Hooks** ([`.claude/hooks/`](.claude/hooks/)) : bloquent push `main` et exposition de secrets.
+
+→ Détail d'utilisation : [docs/usage.md](docs/usage.md).
+
+## Conventions (à respecter)
+
+Les conventions de code sont dans les **skills** (chargées à la demande, appliquées par le `reviewer`) :
+- Backend → [`.claude/skills/python-api/SKILL.md`](.claude/skills/python-api/SKILL.md)
+- Frontend → [`.claude/skills/react-ui/SKILL.md`](.claude/skills/react-ui/SKILL.md)
+
+## Garde-fous (repo)
+
+- **Secrets** : jamais en clair, jamais loggés ; variables d'env / `.env` (git-ignoré). Hook dédié.
+- **Branches protégées** : pas de `git push` direct sur `main` (hook + PR). Conventional Commits.
+- **Ne pas** modifier les workflows CI/CD ni les hooks sans demande explicite.
 
 ## Lancer en local
 
 ```bash
 docker compose up --build      # front http://localhost:8080 · API http://localhost:8000/docs
-cd backend && pip install -r requirements.txt && pytest -q
-cd frontend && npm install && npm run dev
+# Tests back : docker run --rm -v "$PWD/backend:/app" -w /app local/todo-backend pytest -q
 ```
+Détail (ports, rollback, modes) : [docs/ci-cd.md](docs/ci-cd.md).
