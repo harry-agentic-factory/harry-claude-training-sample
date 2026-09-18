@@ -26,7 +26,7 @@ claude doctor      # diagnostic complet de l'installation, sans ouvrir de sessio
 
 ## 2. Le repo et l'app
 ```
-git clone https://github.com/abdouTurki/harry-claude-training-sample
+git clone https://github.com/harry-agentic-factory/harry-claude-training-sample
 cd harry-claude-training-sample
 docker compose up --build -d      # 2-3 min la première fois (télécharge les images)
 docker compose ps                 # attendu : backend ET frontend « healthy »
