@@ -14,9 +14,14 @@
 | **jq** (pour les garde-fous) | `winget install jqlang.jq` (ou `choco install jq`) | `brew install jq` | `sudo apt install jq` |
 | **Claude Code** | PowerShell : `irm https://claude.ai/install.ps1 \| iex` (ou `winget install Anthropic.ClaudeCode`) | `curl -fsSL https://claude.ai/install.sh \| bash` (ou `brew install --cask claude-code`) | `curl -fsSL https://claude.ai/install.sh \| bash` |
 
-Compte : Claude Code demande un compte **Pro, Max, Team ou Enterprise** (le plan gratuit ne suffit
-pas). Utilise le compte ou l'accès fourni par Harington. Première connexion : lance `claude`, suis
-l'ouverture du navigateur.
+**Compte : rien à faire ce soir.** Une **clé API Anthropic personnelle** te sera remise à l'accueil
+demain matin ; c'est elle qui donnera accès à Claude Code pendant la formation. Installe simplement
+le CLI ci-dessus — `claude --version` et `claude doctor` fonctionnent sans être connecté.
+
+Si tu as déjà un compte **Pro, Max, Team ou Enterprise**, tu peux te connecter dès maintenant
+(`claude`, puis suis l'ouverture du navigateur) : ça te permettra de faire l'étape 3 en entier. Sache
+juste que demain, la variable d'environnement `ANTHROPIC_API_KEY` **primera** sur cette connexion —
+c'est voulu, et c'est l'objet du module 03.
 
 Vérifie dans un terminal — Windows : **Git Bash** (menu Démarrer → « Git Bash »), pas PowerShell :
 ```
@@ -34,14 +39,20 @@ docker compose ps                 # attendu : backend ET frontend « healthy »
 Ouvre http://localhost:8080 : tu dois voir « Mes tâches ». Puis `docker compose down`.
 Un port 8000 ou 8080 déjà pris ? Ce n'est pas grave, on remappe le jour J.
 
-## 3. Le navigateur de test (Playwright)
-Toujours dans le dossier du repo, lance `claude`, puis tape dans la conversation :
+## 3. Le navigateur de test (Playwright) — **l'étape qui peut bloquer**
+La formation pilote un vrai navigateur. Au premier usage, Playwright télécharge Chromium (~150 Mo) :
+c'est l'étape que les proxys d'entreprise bloquent. On la fait **ce soir**, pas demain à 18 en même
+temps. Aucune connexion à Claude n'est nécessaire :
 ```
-ouvre http://localhost:8080 avec playwright et dis-moi le titre de la page
+npx playwright install chromium
 ```
-(app relancée avant avec `docker compose up -d`). La **première fois**, Claude télécharge le serveur
-Playwright puis Chromium (~150 Mo) : c'est normal. Derrière un proxy d'entreprise, c'est l'étape qui
-peut bloquer — signale-le avant la session.
+Si ça échoue (proxy, certificat, timeout) : **note l'erreur exacte et signale-la avant la session**.
+On a un plan B, mais il faut le savoir à l'avance.
+
+Bonus, seulement si tu t'es déjà connecté avec un compte existant : relance l'app
+(`docker compose up -d`), lance `claude` et tape dans la conversation
+`ouvre http://localhost:8080 avec playwright et dis-moi le titre de la page`. Ça valide la chaîne
+complète. Sinon, on le fera ensemble demain.
 
 ## 4. Optionnel : l'extension VS Code « Harry AI Tutor »
 Si tu utilises VS Code, **une commande** depuis le dossier du repo installe l'extension officielle
@@ -54,9 +65,23 @@ Ouvre ensuite le dossier du repo dans VS Code : l'icône Harry apparaît dans la
 parcours, étape courante, bilan). Au premier lancement de Claude Code, connecte-toi avec ton compte.
 
 ## 5. Le jour J
-Dans le dossier du repo : `claude`, puis `/formation`. Le tuteur te demande ton prénom et ton profil
-(`dev` / `po` / `techlead`) et te guide un pas à la fois. Le formateur peut dire « tout le monde tape
-`/formation 11` » pour synchroniser la salle.
+
+**1. Ta clé.** Elle t'est remise à l'accueil. Dans ton terminal (Git Bash sous Windows, zsh sous
+macOS), rends-la permanente — sinon elle disparaît dès que tu ouvres un autre terminal, et tu en
+ouvriras plusieurs :
+```
+echo 'export ANTHROPIC_API_KEY=ta-cle-ici' >> ~/.bashrc   # Git Bash / Linux
+echo 'export ANTHROPIC_API_KEY=ta-cle-ici' >> ~/.zshrc    # macOS
+```
+Puis **ouvre un nouveau terminal** et vérifie avec `claude` → `/status`.
+
+La clé est **personnelle et nominative** : elle ne se partage pas, ne se colle jamais dans le repo,
+et ne s'affiche jamais dans une commande (le repo a un garde-fou qui t'en empêchera — c'est le
+module 06).
+
+**2. La formation.** Dans le dossier du repo : `claude`, puis `/formation`. Le tuteur te demande ton
+prénom et ton profil (`dev` / `po` / `techlead`) et te guide un pas à la fois. Le formateur peut dire
+« tout le monde tape `/formation 11` » pour synchroniser la salle.
 
 Fiche de référence (accès connecté) :
 https://training.harington.fr/formation/fiche_prise_en_main_claude.html
