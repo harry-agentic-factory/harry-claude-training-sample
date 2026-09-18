@@ -27,12 +27,25 @@ export default function App() {
     refresh(filter);
   }, [filter]);
 
+  // Exécute une action API puis recharge la liste. Toute erreur remonte à l'utilisateur
+  // (convention react-ui n°5 : pas d'erreur réseau muette).
+  // NB : pas de `.then(refresh)` — refresh recevrait la réponse HTTP en guise de filtre.
+  async function run(action) {
+    try {
+      await action();
+    } catch (e) {
+      setError(e.message);
+      return false;
+    }
+    await refresh();
+    return true;
+  }
+
   async function onAdd(e) {
     e.preventDefault();
-    if (!title.trim()) return;
-    await createTodo(title.trim());
-    setTitle("");
-    refresh();
+    const t = title.trim();
+    if (!t) return;
+    if (await run(() => createTodo(t))) setTitle("");
   }
 
   return (
@@ -71,12 +84,12 @@ export default function App() {
             <input
               type="checkbox"
               checked={t.done}
-              onChange={() => toggleTodo(t.id, !t.done).then(refresh)}
+              onChange={() => run(() => toggleTodo(t.id, !t.done))}
             />
             <span style={{ flex: 1, textDecoration: t.done ? "line-through" : "none" }}>
               {t.title}
             </span>
-            <button onClick={() => deleteTodo(t.id).then(refresh)}>✕</button>
+            <button onClick={() => run(() => deleteTodo(t.id))}>✕</button>
           </li>
         ))}
       </ul>

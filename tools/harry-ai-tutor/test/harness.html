@@ -1,0 +1,11 @@
+<!DOCTYPE html><html lang="fr"><head><meta charset="UTF-8"><title>Harry harness</title>
+<link rel="stylesheet" href="/media/webview.css"><style>body{max-width:360px}</style></head>
+<body><div id="app" class="app"><div class="boot">Harry se réveille…</div></div>
+<script>
+  window.__posted = [];
+  window.acquireVsCodeApi = () => ({ postMessage: (m) => window.__posted.push(m) });
+  window.__HARRY__ = { dist: "/dist", models: "/models", media: "/media" };
+  window.__load = async (name) => { const s = await (await fetch("/test/out/" + name + ".json")).json(); window.__harry.inject(s); return s.progress && s.progress.etape; };
+</script>
+<script type="module" src="/dist/main.js"></script>
+</body></html>

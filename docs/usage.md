@@ -111,6 +111,43 @@ appelé à la demande. Duo intéressant : **rule + hook** — la rule explique, 
 | `secrets.md` | — | **toujours** — double le hook `block-secret-exposure` |
 | `git-hygiene.md` | — | **toujours** — commits + pas de push `main` + archivage > suppression |
 
+## 7. Formation guidée (`/formation`)
+
+Un **tuteur** intégré au repo pour suivre la fiche « Prise en main de Claude » pas à pas — en salle avec
+un formateur, ou seul. C'est une command (`.claude/commands/formation.md`) qui charge une skill
+(`.claude/skills/formation-guide/`) : la méthode dans `SKILL.md`, les parcours par profil dans
+`parcours.md`, un fichier par module dans `modules/` (concept, exercice par profil, vérification).
+La command est la porte d'entrée (elle porte les arguments) ; la skill est le savoir-faire, marquée
+`user-invocable: false` pour ne pas apparaître dans le menu `/` à côté de `/formation`.
+
+| Commande | Effet |
+|---|---|
+| `/formation` | Première fois : accueil + prénom et profil (`dev` / `po` / `techlead`, OS détecté), puis module 00 pas à pas (branche, diagnostic, app). Ensuite : reprend à l'étape courante. |
+| `/formation suivant` | Vérifie l'étape (par l'état du repo, sinon une question de contrôle), puis passe à la suivante. |
+| `/formation 11` | Saute au module 11 — synchro avec le formateur (« tout le monde tape `/formation 11` »). |
+| `/formation bilan` | Modules faits / sautés, temps, 3 choses à retenir de son parcours. |
+| `/formation check` | Relance le diagnostic outils (Docker, Node, jq, MCP). |
+| `/formation profil` | Change de profil et recalcule le parcours. |
+| `/formation reset` | Après confirmation, efface la progression (`.formation/progress.json`) et repart à l'accueil. |
+
+La progression vit dans `.formation/progress.json` (git-ignoré) : elle survit à `/compact` et à
+`claude --continue` — c'est le module 07 en pratique. Le tuteur **fait faire** : il donne la commande ou
+le prompt exact, le stagiaire le tape, et le tuteur vérifie l'état du repo avant d'avancer.
+
+> **Multi-OS** : sous Windows, **Git for Windows** et `jq` sont requis (les hooks sont des scripts
+> bash). `.gitattributes` force les fins de ligne LF sur les `.sh`. Checklist à envoyer aux stagiaires
+> la veille : [formation-prerequis.md](formation-prerequis.md).
+
+### Compagnon VS Code : Harry AI Tutor (`tools/harry-ai-tutor/`)
+
+Extension VS Code **optionnelle**, installée depuis un `.vsix` (pas de marketplace). Le tuteur reste
+dans Claude Code ; l'extension est un **viewer + télécommande** : carte animée du parcours, étape
+courante avec l'exercice du profil, fichiers de l'étape ouverts en un clic, **bilan** visuel, et bouton **Suivant** qui
+pré-remplit `/formation suivant` dans le panneau de l'extension Claude Code (Entrée à valider ; repli terminal).
+Elle lit `.formation/progress.json` et les fichiers de la skill : aucune pédagogie n'y est dupliquée. Détail, réglages et build : `tools/harry-ai-tutor/README.md`.
+
+---
+
 ## Cycle complet (exemple exécutable)
 
 ```

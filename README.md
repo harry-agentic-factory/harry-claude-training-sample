@@ -19,9 +19,10 @@ cite des extraits.
 | **CLAUDE.md** | [`CLAUDE.md`](CLAUDE.md) | Mémoire projet : archi, conventions, garde-fous |
 | **settings.json** | [`.claude/settings.json`](.claude/settings.json) | `permissions` allow/deny, `model`, `hooks` |
 | **Hooks (garde-fous)** | [`.claude/hooks/`](.claude/hooks/) | `block-protected-branch.sh` (bloque `git push` sur `main`) + `block-secret-exposure.sh` (bloque toute commande/lecture exposant un secret) — *mécanisme, pas instruction* |
-| **Commands** | [`.claude/commands/`](.claude/commands/) | `/scope` `/spec` `/implement` `/test` |
+| **Commands** | [`.claude/commands/`](.claude/commands/) | `/scope` `/spec` `/implement` `/test` · `/formation` (tuteur guidé) |
+| **Extension VS Code** | [`tools/harry-ai-tutor/`](tools/harry-ai-tutor/) | Harry AI Tutor : compagnon du tuteur (carte animée, fichiers, bilan, bouton Suivant vers Claude Code) |
 | **Agents** | [`.claude/agents/`](.claude/agents/) | `reviewer` (lecture seule), `tester` (Playwright), `deployer` |
-| **Skills** | [`.claude/skills/`](.claude/skills/) | `python-api`, `react-ui`, `docker-deploy` |
+| **Skills** | [`.claude/skills/`](.claude/skills/) | `python-api`, `react-ui`, `local-deploy`, `docker-deploy`, `formation-guide` |
 | **MCP** | [`.mcp.json`](.mcp.json) | `playwright` (e2e UI), `github` (PR/CI) |
 | **CI/CD** | [`.github/workflows/`](.github/workflows/) | `ci.yml` (PR) · `deploy.yml` (illustratif) |
 
@@ -58,6 +59,14 @@ Ouvre le repo dans Claude Code, puis :
 ```
 
 Puis délègue : « lance l'agent reviewer sur le diff », « lance l'agent tester sur la UI ».
+
+Ou, **guidé pas à pas** (dev, PO ou techlead — en salle ou seul) :
+
+```
+/formation            # accueil, profil, diagnostic de l'environnement, puis un module à la fois
+/formation suivant    # vérifie l'étape et passe à la suivante
+/formation 11         # synchro avec le formateur
+```
 
 ## ⚠️ Déploiement
 

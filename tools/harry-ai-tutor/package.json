@@ -1,0 +1,128 @@
+{
+  "name": "harry-ai-tutor",
+  "displayName": "Harry AI Tutor",
+  "description": "Compagnon VS Code du tuteur /formation (Claude Code) : carte de progression animée, étape courante, ouverture des fichiers de l'étape, boutons Suivant / Bilan vers l'extension Claude Code.",
+  "version": "0.1.0",
+  "publisher": "harington",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Education"
+  ],
+  "keywords": [
+    "claude",
+    "formation",
+    "harington",
+    "tutor"
+  ],
+  "icon": "media/icon.png",
+  "activationEvents": [
+    "workspaceContains:**/.claude/skills/formation-guide/SKILL.md"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "harryTutor",
+          "title": "Harry AI Tutor",
+          "icon": "media/activity.svg"
+        }
+      ]
+    },
+    "views": {
+      "harryTutor": [
+        {
+          "type": "webview",
+          "id": "harryTutor.view",
+          "name": "Formation",
+          "icon": "media/activity.svg"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "harryTutor.start",
+        "title": "Harry : démarrer la formation (ouvre Claude Code)",
+        "category": "Harry"
+      },
+      {
+        "command": "harryTutor.next",
+        "title": "Harry : étape suivante (/formation suivant)",
+        "category": "Harry"
+      },
+      {
+        "command": "harryTutor.bilan",
+        "title": "Harry : bilan (/formation bilan)",
+        "category": "Harry"
+      },
+      {
+        "command": "harryTutor.openFiche",
+        "title": "Harry : ouvrir la fiche de formation",
+        "category": "Harry"
+      },
+      {
+        "command": "harryTutor.reset",
+        "title": "Harry : réinitialiser la progression",
+        "category": "Harry"
+      }
+    ],
+    "configuration": {
+      "title": "Harry AI Tutor",
+      "properties": {
+        "harryTutor.bridge": {
+          "type": "string",
+          "default": "auto",
+          "enum": [
+            "auto",
+            "claude-extension",
+            "claude-deeplink",
+            "terminal"
+          ],
+          "enumDescriptions": [
+            "Extension Claude Code si installée (prompt pré-rempli, Entrée à valider), sinon terminal intégré.",
+            "Extension Claude Code : commande interne (respecte l'emplacement préféré : barre latérale / onglet).",
+            "Extension Claude Code : deep link documenté vscode://anthropic.claude-code/open (ouvre un onglet).",
+            "Terminal intégré : lance `claude` et tape les commandes (mode CLI)."
+          ],
+          "description": "Comment Harry envoie /formation … à Claude Code."
+        },
+        "harryTutor.claudeCommand": {
+          "type": "string",
+          "default": "claude",
+          "description": "Commande qui lance Claude Code dans le terminal intégré (mode terminal uniquement)."
+        },
+        "harryTutor.autoOpenFiles": {
+          "type": "boolean",
+          "default": true,
+          "description": "Ouvrir automatiquement (en aperçu) le premier fichier cité par l'étape courante."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "package": "npm run build && vsce package --no-dependencies",
+    "test:harness": "node test/make-state.mjs && node test/serve.mjs 8765"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^3.1.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.5.0"
+  },
+  "dependencies": {
+    "marked": "^15.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abdouTurki/harry-claude-training-sample",
+    "directory": "tools/harry-ai-tutor"
+  }
+}

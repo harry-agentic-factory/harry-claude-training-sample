@@ -21,9 +21,14 @@ Le `--build` reconstruit les images modifiées ; `up -d` remplace les conteneurs
 
 ## Vérifier la santé
 
+> Pas de `curl` : il est refusé par `.claude/settings.json` (`deny`, anti-exfiltration). On s'appuie sur
+> les **healthchecks** déclarés dans `docker-compose.yml` (un par service) — portable Windows / macOS / Linux.
+
 ```bash
-curl -fs http://localhost:8000/health           # attendu : {"status":"ok"}
-curl -fs -o /dev/null -w "%{http_code}" http://localhost:8080   # attendu : 200 (front servi)
+docker compose ps                                   # attendu : backend ET frontend "healthy"
+# Détail si besoin (exécuté DANS les conteneurs, sans outil hôte) :
+docker compose exec -T backend python -c "import urllib.request;print(urllib.request.urlopen('http://localhost:8000/health').read().decode())"   # {"status":"ok"}
+docker compose exec -T frontend wget -q --spider http://127.0.0.1/ && echo FRONT_OK                                                             # FRONT_OK
 ```
 
 Si l'un échoue : `docker compose logs --tail=50 backend` / `frontend` pour diagnostiquer.

@@ -45,6 +45,12 @@ def test_delete_missing_returns_404(client: TestClient) -> None:
     assert client.delete("/todos/999").status_code == 404
 
 
+def test_delete_returns_204_and_removes(client: TestClient) -> None:
+    todo_id = client.post("/todos", json={"title": "À supprimer"}).json()["id"]
+    assert client.delete(f"/todos/{todo_id}").status_code == 204
+    assert client.get("/todos").json() == []
+
+
 def test_filter_by_done(client: TestClient) -> None:
     # 2 tâches, une seule terminée.
     a = client.post("/todos", json={"title": "active"}).json()["id"]

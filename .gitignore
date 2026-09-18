@@ -22,3 +22,8 @@ dist/
 
 # Claude Code (config perso non partagée)
 .claude/settings.local.json
+
+# Formation guidée (/formation) : progression locale du stagiaire
+.formation/
+# Sorties du MCP Playwright (snapshots, captures)
+.playwright-mcp/

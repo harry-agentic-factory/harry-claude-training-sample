@@ -1,0 +1,9 @@
+# Tout est exclu sauf ce qui est listé en négatif : le .vsix embarque dist/ et media/.
+**
+!dist/**
+dist/**/*.map
+!media/**
+!package.json
+!README.md
+!LICENSE
+!CHANGELOG.md

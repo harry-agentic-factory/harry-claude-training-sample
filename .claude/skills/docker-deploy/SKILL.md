@@ -11,7 +11,7 @@ description: Méthode de build & déploiement Docker de ce repo. À charger par 
 ```bash
 docker compose build
 docker compose up -d          # front :8080, API :8000
-curl -s localhost:8000/health # doit répondre {"status":"ok"}
+docker compose ps             # les 2 services "healthy" (pas de curl : refusé par settings.json)
 ```
 
 ## Déploiement cible (illustratif)

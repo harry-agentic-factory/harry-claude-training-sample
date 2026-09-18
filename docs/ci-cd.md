@@ -38,7 +38,7 @@ Le mode est **donné à l'appel** de l'agent (`local` ou `remote`), qui charge l
 
 ```bash
 docker compose up -d --build           # front :8080, back :8000
-curl -fs localhost:8000/health         # {"status":"ok"}
+docker compose ps                      # backend + frontend : healthy (curl est refusé dans Claude Code : deny settings.json)
 docker compose down                    # arrêter (–v pour reset des données)
 ```
 

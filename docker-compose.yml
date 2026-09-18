@@ -25,6 +25,13 @@ services:
       - "${FRONTEND_PORT:-8080}:80"
     depends_on:
       - backend
+    healthcheck:
+      # wget = busybox, présent dans nginx:alpine ; --spider = HEAD sans télécharger.
+      # 127.0.0.1 et pas localhost : dans le conteneur, localhost résout en IPv6 et nginx écoute en IPv4.
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
 
 volumes:
   todo-data:
