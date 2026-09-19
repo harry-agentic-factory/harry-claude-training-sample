@@ -27,8 +27,10 @@ Totaux indicatifs, hors pauses et échanges avec le formateur :
 **dev ≈ 4 h** · **po ≈ 2 h 45** · **techlead ≈ 4 h 30**.
 
 ## Ordre et prérequis
-Ordre numérique. Prérequis durs : **00** avant tout ; **00 pas 3** (app lancée) avant 11 et 13 ;
-**10** (feature cadrée) avant 11, 12 et 14, qui la réutilisent.
+Ordre numérique. Prérequis durs : **00** avant tout ; **00 pas 3** (app lancée, mode `docker` ou
+`natif` choisi à l'accueil) avant 11 et 13 ; **10** (feature cadrée) avant 11, 12 et 14, qui la
+réutilisent. Cas particulier : **module 11 pas 2** (agent `deployer`) reste Docker-only quel que soit
+le mode choisi au pas 00 — cf. `modules/11-agents.md`.
 
 ## Mode formateur (synchro)
 Le formateur annonce « tout le monde tape `/formation 11` » : chacun saute au module 11 quel que soit

@@ -21,8 +21,15 @@ Lis le verdict `{ conforme, ecarts[] }`. Des écarts ? Corrige (ou fais corriger
 **Vérification** : un verdict structuré est revenu dans la conversation.
 
 ## Pas 2/2 — Le deployer et son mode — dev / techlead
-**Exercice** : ouvre `.claude/agents/deployer.md` : le mode (`local` / `remote`) est donné **à l'appel**
-et choisit la skill. Tape :
+<!-- tuteur : ce pas exerce spécifiquement docker compose (agent deployer, Docker-only par design). Mode natif : dis-le avant de lancer l'exercice, propose l'alternative ci-dessous plutôt que de bloquer sur un échec. -->
+**Mode natif (sans Docker)** : cet agent build des images et pilote `docker compose` — impossible à
+exécuter sans Docker, quel que soit ton mode par ailleurs. Deux options : installer Docker juste pour
+ce pas (`docker --version` puis on relance), ou lire `.claude/agents/deployer.md` et la skill
+`local-deploy` avec moi (je les résume) sans les exécuter — je note ce pas en `sautes` avec la
+raison. **À toi de choisir.**
+
+**Exercice (mode docker)** : ouvre `.claude/agents/deployer.md` : le mode (`local` / `remote`) est
+donné **à l'appel** et choisit la skill. Tape :
 > Lance l'agent deployer en mode local.
 
 Il rebuild, relance, vérifie `docker compose ps` (healthy) et renvoie `{ mode, ok, tag, url }`.

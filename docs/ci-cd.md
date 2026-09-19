@@ -49,6 +49,24 @@ Ports occupés ? Remapper : `BACKEND_PORT=18010 FRONTEND_PORT=8080 VITE_API_URL=
 Le tag précédent reste dans le cache Docker : revenir au commit précédent puis
 `docker compose up -d --build` (voir la skill `local-deploy`).
 
+### Alternative : lancer l'app sans Docker (dev / formation)
+
+Docker n'est pas requis pour juste **faire tourner l'app** (backend FastAPI + frontend Vite ne
+dépendent pas du conteneur). Utile si Docker n'est pas installable sur le poste — détail pas-à-pas
+dans [docs/formation-prerequis.md § 2](formation-prerequis.md).
+
+```bash
+# Terminal 1
+cd backend && python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt && uvicorn app.main:app --reload --port 8000
+
+# Terminal 2
+cd frontend && npm install && npm run dev   # :5173, cible déjà http://localhost:8000
+```
+
+⚠️ Ce mode ne couvre **pas** les modes `local`/`remote` de l'agent `deployer` ci-dessus (build
+d'image, healthcheck, rollback) : ceux-ci restent Docker-only, c'est leur objet pédagogique.
+
 ## Analogie Talenteo
 
 Ici la cible est simple (docker compose sur VM via GitHub Actions). Chez **Talenteo**, le même rôle est
