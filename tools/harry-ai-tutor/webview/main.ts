@@ -55,7 +55,7 @@ const countDone = (s: TutorState) => pathModules(s).filter((m) => s.progress?.fa
 
 function renderHeader(s: TutorState): string {
   const p = s.progress;
-  const chip = p?.prenom ? `<span class="chip">${esc(p.prenom)} · ${esc(p.profil ?? "?")}${p.os ? " · " + esc(p.os) : ""}</span>` : "";
+  const chip = p?.prenom ? `<span class="chip">${esc(p.prenom)} · ${esc(p.profil ?? "?")}${p.os ? " · " + esc(p.os) : ""}${p.mode ? " · " + esc(p.mode) : ""}</span>` : "";
   return `<header class="hd">${MASCOT}
     <div class="brand"><div class="t">Harry <span>AI Tutor</span></div><div class="sub">Prise en main de Claude</div></div>
     <div class="hd-actions">
