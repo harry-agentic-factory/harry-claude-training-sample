@@ -9,10 +9,16 @@
 | Outil | Windows | macOS | Linux (Debian / Ubuntu) |
 |---|---|---|---|
 | **Git** | [Git for Windows](https://git-scm.com/downloads/win) — **obligatoire** : Claude Code s'en sert pour ses commandes shell, et les garde-fous du repo sont des scripts bash | `xcode-select --install` ou `brew install git` | `sudo apt install git` |
-| **Docker** | Docker Desktop, **lancé** | Docker Desktop ou OrbStack, **lancé** | Docker Engine + plugin `docker compose` |
-| **Node.js ≥ 20** (pour le navigateur de test) | [nodejs.org](https://nodejs.org) (LTS) | `brew install node` | `sudo apt install nodejs npm` |
+| **Docker** *(recommandé, pas obligatoire — cf. §2)* | Docker Desktop, **lancé** | Docker Desktop ou OrbStack, **lancé** | Docker Engine + plugin `docker compose` |
+| **Node.js ≥ 20** — **obligatoire** (navigateur de test §3, et remplace Docker pour le front si tu passes en mode natif) | [nodejs.org](https://nodejs.org) (LTS) | `brew install node` | `sudo apt install nodejs npm` |
+| **Python ≥ 3.12** *(uniquement en mode natif sans Docker, pour le back)* | [python.org](https://python.org) | `brew install python@3.12` | `sudo apt install python3 python3-venv` |
 | **jq** (pour les garde-fous) | `winget install jqlang.jq` (ou `choco install jq`) | `brew install jq` | `sudo apt install jq` |
 | **Claude Code** | PowerShell : `irm https://claude.ai/install.ps1 \| iex` (ou `winget install Anthropic.ClaudeCode`) | `curl -fsSL https://claude.ai/install.sh \| bash` (ou `brew install --cask claude-code`) | `curl -fsSL https://claude.ai/install.sh \| bash` |
+
+**Docker n'est pas indispensable pour suivre la formation.** Il sert à lancer l'app (§2) et à deux
+modules illustratifs sur le déploiement (agent `deployer`) ; si ton poste ne permet pas d'installer
+Docker Desktop (proxy, droits admin, corporate), utilise le **mode natif** ci-dessous : tu suivras la
+formation normalement, seuls ces deux modules seront décrits plutôt que rejoués en direct.
 
 **Compte : rien à faire ce soir.** Une **clé API Anthropic personnelle** te sera remise à l'accueil
 demain matin ; c'est elle qui donnera accès à Claude Code pendant la formation. Installe simplement
@@ -25,19 +31,42 @@ c'est voulu, et c'est l'objet du module 03.
 
 Vérifie dans un terminal — Windows : **Git Bash** (menu Démarrer → « Git Bash »), pas PowerShell :
 ```
-git --version && docker compose version && node --version && jq --version && claude --version
+git --version && node --version && jq --version && claude --version
+docker compose version   # seulement si tu comptes utiliser l'option A (Docker) du §2
+python3 --version        # seulement si tu comptes utiliser l'option B (mode natif) du §2
 claude doctor      # diagnostic complet de l'installation, sans ouvrir de session
 ```
 
 ## 2. Le repo et l'app
+
 ```
 git clone https://github.com/harry-agentic-factory/harry-claude-training-sample
 cd harry-claude-training-sample
+```
+
+**Option A — avec Docker (recommandé)** :
+```
 docker compose up --build -d      # 2-3 min la première fois (télécharge les images)
 docker compose ps                 # attendu : backend ET frontend « healthy »
 ```
 Ouvre http://localhost:8080 : tu dois voir « Mes tâches ». Puis `docker compose down`.
 Un port 8000 ou 8080 déjà pris ? Ce n'est pas grave, on remappe le jour J.
+
+**Option B — mode natif (sans Docker)**, deux terminaux :
+```
+# Terminal 1 — API (Python)
+cd backend
+python3 -m venv .venv && source .venv/bin/activate   # Windows : .venv\Scripts\activate
+pip install -r requirements.txt
+uvicorn app.main:app --reload --port 8000
+
+# Terminal 2 — front (Node)
+cd frontend
+npm install
+npm run dev                       # http://localhost:5173, appelle déjà http://localhost:8000
+```
+Ouvre http://localhost:5173 : tu dois voir « Mes tâches ». `Ctrl+C` dans les deux terminaux pour arrêter.
+Ce mode fonctionne aussi bien pour la formation ; seule différence, le port du front (5173 au lieu de 8080).
 
 ## 3. Le navigateur de test (Playwright) — **l'étape qui peut bloquer**
 La formation pilote un vrai navigateur. Au premier usage, Playwright télécharge Chromium (~150 Mo) :
@@ -49,10 +78,10 @@ npx playwright install chromium
 Si ça échoue (proxy, certificat, timeout) : **note l'erreur exacte et signale-la avant la session**.
 On a un plan B, mais il faut le savoir à l'avance.
 
-Bonus, seulement si tu t'es déjà connecté avec un compte existant : relance l'app
-(`docker compose up -d`), lance `claude` et tape dans la conversation
-`ouvre http://localhost:8080 avec playwright et dis-moi le titre de la page`. Ça valide la chaîne
-complète. Sinon, on le fera ensemble demain.
+Bonus, seulement si tu t'es déjà connecté avec un compte existant : relance l'app (`docker compose up -d`,
+ou les deux `uvicorn`/`npm run dev` en mode natif), lance `claude` et tape dans la conversation
+`ouvre http://localhost:8080 avec playwright et dis-moi le titre de la page` (remplace le port par
+`5173` en mode natif). Ça valide la chaîne complète. Sinon, on le fera ensemble demain.
 
 ## 4. Optionnel : l'extension VS Code « Harry AI Tutor »
 Si tu utilises VS Code, **une commande** depuis le dossier du repo installe l'extension officielle
