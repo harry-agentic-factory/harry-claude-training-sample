@@ -18,5 +18,7 @@ passé, et les 3 choses à retenir de **ton** parcours. Puis choisis ton « prem
 La fiche explique, le repo fait pratiquer. Le `.claude/` est un gabarit réutilisable.
 
 ## Nettoyage (optionnel)
-`docker compose down` (garde les données) · `docker compose down -v` (reset complet).
+Mode docker : `docker compose down` (garde les données) · `docker compose down -v` (reset complet).
+Mode natif : `Ctrl+C` dans les deux terminaux (API + front) ; supprime `backend/todo.db` pour repartir
+de zéro.
 La branche `formation/<prenom>` peut rester, ou partir en PR pour montrer ton travail.

@@ -40,11 +40,13 @@ docker compose up --build
 #  → front  : http://localhost:8080
 #  → API    : http://localhost:8000/docs  (Swagger)
 
-# Back en local
-cd backend && pip install -r requirements.txt && pytest -q
+# Back en local (sans Docker)
+cd backend && pip install -r requirements.txt
+pytest -q                                       # tests
+uvicorn app.main:app --reload --port 8000        # API
 
-# Front en local
-cd frontend && npm install && npm run dev
+# Front en local (sans Docker)
+cd frontend && npm install && npm run dev        # :5173, cible http://localhost:8000
 ```
 
 ## Essayer le harness Claude Code

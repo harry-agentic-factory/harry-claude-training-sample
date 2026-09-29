@@ -7,6 +7,7 @@ export interface Progress {
   prenom?: string;
   profil?: Profil;
   os?: string;
+  mode?: "docker" | "natif";
   etape?: string; // "10.2"
   faits?: Record<string, string>;
   sautes?: string[];

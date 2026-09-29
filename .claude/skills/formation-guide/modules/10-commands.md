@@ -32,16 +32,21 @@ po : ces critères d'acceptation, les aurais-tu écrits ainsi ? Modifie-les à l
 invariants (le même que le PRD, ou un second : dis-moi lequel, je le note).
 
 ## Pas 3/4 — Implémenter (/implement) — dev / techlead
-**Exercice** : `/implement`. Claude déroule le plan, lance les tests (via Docker) et `npm run build`
-à chaque étape, commit par étape sur ta branche. **Reste dans la boucle** : lis chaque diff avant
-d'accepter. Si un test casse, laisse-le corriger et vérifie qu'il relance les tests.
-**Vérification** : je vérifie que `git log --oneline main..HEAD` montre ≥ 1 commit en Conventional Commits, et que les
-tests passent : `docker run --rm -v "$PWD/backend:/app" -w /app local/todo-backend pytest -q`
-(Windows / Git Bash : `MSYS_NO_PATHCONV=1` devant la commande).
+**Exercice** : `/implement`. Claude déroule le plan, lance les tests (`docker run` ou `pytest` selon
+ton mode) et `npm run build` à chaque étape, commit par étape sur ta branche. **Reste dans la
+boucle** : lis chaque diff avant d'accepter. Si un test casse, laisse-le corriger et vérifie qu'il
+relance les tests.
+**Vérification** : je vérifie que `git log --oneline main..HEAD` montre ≥ 1 commit en Conventional
+Commits, et que les tests passent :
+- mode docker : `docker run --rm -v "$PWD/backend:/app" -w /app local/todo-backend pytest -q`
+  (Windows / Git Bash : `MSYS_NO_PATHCONV=1` devant la commande).
+- mode natif : `pytest -q` dans `backend/` (venv activé).
 
 ## Pas 4/4 — Recetter (/test) — dev / techlead
-**Exercice** : rebuild (`docker compose up --build -d`) puis `/test TODO-2`. Claude relance tests et
-build, puis pilote le navigateur via Playwright pour vérifier chaque critère.
+**Exercice** : mode docker : rebuild (`docker compose up --build -d`). Mode natif : rien à rebuild —
+`uvicorn --reload` et `npm run dev` rechargent déjà le code modifié, vérifie juste que les deux
+terminaux tournent toujours. Puis `/test TODO-2`. Claude relance tests et build, puis pilote le
+navigateur via Playwright pour vérifier chaque critère.
 **Vérification** : le verdict de `/test` est OK, ou ses échecs sont décrits attendu / observé.
 
 ## À retenir

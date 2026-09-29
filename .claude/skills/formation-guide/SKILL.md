@@ -21,7 +21,7 @@ sous Windows, macOS ou Linux ; seul ou en salle avec un formateur.
 
 ## État : `.formation/progress.json` (git-ignoré)
 ```json
-{ "version": 1, "prenom": "Sam", "profil": "po", "os": "windows", "etape": "10.2",
+{ "version": 1, "prenom": "Sam", "profil": "po", "os": "windows", "mode": "docker", "etape": "10.2",
   "faits": { "00": "2026-09-17T09:12:00Z", "01": "…" }, "sautes": ["06"],
   "notes": ["ports remappés : back 18000 / front 18080"] }
 ```
@@ -29,6 +29,9 @@ sous Windows, macOS ou Linux ; seul ou en salle avec un formateur.
 - `etape` = `<module>.<pas>` courant (ex. `10.2`). `profil` ∈ `dev` | `po` | `techlead`.
 - `os` ∈ `windows` | `macos` | `linux` — **détecté** par `uname -s` (`MINGW*` / `MSYS*` → windows,
   `Darwin` → macos, sinon linux), jamais demandé.
+- `mode` ∈ `docker` | `natif` — **demandé** (jamais deviné) dès le premier lancement, avant même le
+  module 00 : Docker installé et lancé sur sa machine ? Conditionne toutes les commandes de
+  lancement/tests/santé de l'app dans 00, 10, 11, 13, 17 — cf. Multi-OS.
 - `faits` : un **module entier** validé (dernier pas du profil OK) → clé module + date ISO.
   `sautes` : modules du **parcours du profil** passés sans validation (synchro formateur), y compris
   un module entamé mais non fini ; les modules optionnels (○) du profil n'y vont jamais. Retire un
@@ -40,10 +43,14 @@ sous Windows, macOS ou Linux ; seul ou en salle avec un formateur.
   appel de tool visible dans le tour précédent.)
 
 ## Premier lancement (pas de progress.json)
-1. Détecte l'OS (`uname -s`). Accueille en 2 lignes. Demande **prénom** et **profil** — `dev` (tout le
+1. Détecte l'OS (`uname -s`). Accueille en 2 lignes. Demande **prénom**, **profil** — `dev` (tout le
    parcours, avec code) / `po` (cadrage, agents, orchestration, zéro code) / `techlead` (dev + settings,
-   brain, skills approfondis). **Arrête-toi** et attends la réponse.
-2. Réponse reçue → crée `progress.json` (`etape: "00.1"`), puis présente le module 00 · pas 1.
+   brain, skills approfondis) — **et** si Docker est installé et **lancé** sur sa machine (Docker
+   Desktop / Docker Engine — oui / non / pas sûr). C'est cette réponse qui fixe `mode` : ne le devine
+   jamais, ne le suppose pas depuis l'OS. Si « pas sûr », dis que tu vérifieras au module 00 · pas 2 et
+   fixeras `mode` à ce moment-là. **Arrête-toi** et attends la réponse.
+2. Réponse reçue → crée `progress.json` (`mode: "docker"` ou `"natif"`, `etape: "00.1"`), puis
+   présente le module 00 · pas 1.
 
 ## Déroulé d'une étape (format constant, français, tutoiement)
 1. **Où on est** — `Module NN · pas k/m — <titre>` + `§NN de la fiche`.
@@ -62,7 +69,8 @@ le résultat, et si tout est OK valide le pas et présente **le pas suivant dans
 
 ## Valider (`suivant`)
 - D'abord par **l'état** : fichier créé, `git status --short`, `git branch --show-current`, `git log`,
-  `docker compose ps`, refus d'un hook ou appel de tool visible dans le tour précédent. Pas sur parole.
+  la santé de l'app (`docker compose ps` en mode `docker` · process actifs + requête santé en mode
+  `natif` — cf. Multi-OS), refus d'un hook ou appel de tool visible dans le tour précédent. Pas sur parole.
 - Non vérifiable par l'état → pose la **question de contrôle** du module ; une réponse approximative
   mais juste suffit.
 - KO → explique l'écart en 2 lignes, propose la correction, reste sur l'étape. Jamais de blâme.
@@ -74,11 +82,17 @@ le résultat, et si tout est OK valide le pas et présente **le pas suivant dans
 ## Synchro formateur (`/formation <n°>`)
 - Saute au module demandé **sans valider** : `etape` passe tout de suite au premier pas du module
   demandé (pour le profil) ; les modules non faits entre les deux vont dans `sautes`.
-- **Prérequis dur non rempli** — vérifié **par l'état**, jamais par `faits` : `docker compose ps`
-  (2 services `healthy`) pour 11 et 13 ; un fichier de feature dans `docs/features/` autre que
-  `filtre-taches.md` pour 11 (dev), 12, 14 → une ligne d'avertissement + propose le pas minimal
-  d'abord (« on lance l'app, 3 min, puis module 11 »). N'interdis pas : le stagiaire décide. S'il
-  accepte, fais ce pas comme un **détour** (note dans `notes`, `etape` ne bouge pas) puis reprends.
+- **Prérequis dur non rempli** — vérifié **par l'état**, jamais par `faits` : l'app doit tourner
+  (`docker compose ps` 2 services `healthy` en mode `docker` · process `uvicorn`/`vite` actifs +
+  requête santé en mode `natif` — cf. Multi-OS) pour 11 et 13 ; un fichier de feature dans
+  `docs/features/` autre que `filtre-taches.md` pour 11 (dev), 12, 14 → une ligne d'avertissement +
+  propose le pas minimal d'abord (« on lance l'app, 3 min, puis module 11 »). N'interdis pas : le
+  stagiaire décide. S'il accepte, fais ce pas comme un **détour** (note dans `notes`, `etape` ne
+  bouge pas) puis reprends.
+- **Mode `natif` + module 11 pas 2** (agent `deployer`) : Docker-only par design (build d'image +
+  `docker compose`), impossible à exécuter sans Docker quel que soit `mode`. Ne bloque pas : propose
+  d'installer Docker juste pour ce pas, ou de lire `.claude/agents/deployer.md` avec toi sans
+  l'exécuter (note le pas en `sautes` avec la raison).
 - Au `bilan`, propose les modules de `sautes`.
 
 ## Règles
@@ -93,26 +107,51 @@ le résultat, et si tout est OK valide le pas et présente **le pas suivant dans
 - **Le stagiaire est en avance ?** (exercice déjà fait, ou connu) → vérifie, valide, avance.
 - **Ton** → direct, concret, encourageant. Pas de jargon non défini. Pas de méta-commentaire.
 
+## Mode `docker` vs `natif` (`mode` dans `progress.json`)
+- **`docker`** — app lancée par `docker compose`, tests par `docker run`, santé par `docker compose
+  ps` : déterministe, isolé de l'environnement Python/Node local. **Reste le mode par défaut** dès que
+  Docker est disponible et lancé.
+- **`natif`** — Docker non installable (proxy, droits admin, poste contraint) : app lancée par
+  `uvicorn` (backend, venv) + `npm run dev` (frontend), tests par `pytest` dans le venv, santé par une
+  requête directe sans `curl`. Couvre **tous les modules sauf le module 11 · pas 2** (agent
+  `deployer`, Docker-only par design — cf. `modules/11-agents.md` et Synchro formateur ci-dessus).
+- Les deux modes sont équivalents pour suivre la formation. Ne les mélange jamais dans une même
+  étape ; si le stagiaire change d'avis en cours de route, mets `mode` à jour, dis-le explicitement
+  (ça change toutes les commandes des modules suivants) et note le changement dans `notes`.
+
 ## Multi-OS (ne suppose jamais l'OS de l'auteur : détecte-le)
-- Commandes portables uniquement : `docker compose …`, `git …`, `node`, `npx`, `ls`, `printf`, `uname`.
-  Chemins avec `/`. Pas de `/tmp`, `sudo`, `xdg-open`, `open`, `apt` non demandé.
-- Tests back **via Docker**, jamais via un Python local :
-  `docker run --rm -v "$PWD/backend:/app" -w /app local/todo-backend pytest -q`
-  **Windows / Git Bash** : préfixer par `MSYS_NO_PATHCONV=1` (sinon Git Bash réécrit `/app` en chemin Windows).
-- Santé de l'app : `docker compose ps` (les 2 services `healthy`). Pas de `curl` : il est refusé par
-  `settings.json` (c'est voulu, cf. module 06).
+- Commandes portables uniquement : `docker compose …` / `uvicorn` / `npm`, `git …`, `node`, `npx`,
+  `ls`, `printf`, `uname`. Chemins avec `/`. Pas de `/tmp`, `sudo`, `xdg-open`, `open`, `apt` non demandé.
+- **Tests back** :
+  - `docker` : `docker run --rm -v "$PWD/backend:/app" -w /app local/todo-backend pytest -q`
+    (Windows / Git Bash : préfixer par `MSYS_NO_PATHCONV=1`, sinon Git Bash réécrit `/app` en chemin Windows).
+  - `natif` : dans `backend/`, venv déjà activé (module 00) : `pytest -q`.
+- **Santé de l'app** : pas de `curl`, refusé par `settings.json` (c'est voulu, cf. module 06).
+  - `docker` : `docker compose ps` (les 2 services `healthy`).
+  - `natif` : `uvicorn`/`vite` tournent (process visibles dans le tour précédent) **et**, pour l'API,
+    une requête directe : `python3 -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health')"`.
+    Pour le front, pas d'équivalent HTTP fiable sans `curl` : ouvre la page dans le navigateur
+    (visuel) ou passe par Playwright (module 13). **Toujours `127.0.0.1`, jamais `localhost`** : si un
+    autre service écoute déjà sur le même port en IPv6 (ex. un autre projet Docker du stagiaire),
+    `localhost` peut résoudre dessus et répondre à la place de l'app — faux positif difficile à
+    diagnostiquer.
 - **Faux positif du hook secrets** : ne mets jamais `echo` / `printf` et `$PWD` dans la **même**
   commande (`PWD` contient `pwd`, motif « secret » du hook → « la commande imprime une variable
   contenant un secret »). Lance la commande de tests seule. Si un stagiaire tombe dessus : explique,
   c'est un bon exemple de garde-fou mécanique (et de ses limites).
-- **Variables d'env inline** (`BACKEND_PORT=18000 … docker compose up`) : syntaxe bash. Elle passe par
-  ton outil Bash (bash sur tous les OS) ou par Git Bash / zsh — **pas par PowerShell ni CMD**.
+- **Variables d'env inline** (`BACKEND_PORT=18000 … docker compose up` / `uvicorn … --port 18000`) :
+  syntaxe bash. Elle passe par ton outil Bash (bash sur tous les OS) ou par Git Bash / zsh — **pas par
+  PowerShell ni CMD**.
 - **Windows** : **Git for Windows** requis (Claude Code s'en sert pour son outil Bash, quel que soit le
   terminal de lancement ; les hooks sont des scripts bash). `jq` requis par le hook secrets
   (`winget install jqlang.jq` ou `choco install jq`) ; sans `jq`, **ce** hook est inerte (le hook
-  push-main a un repli) : dis-le. Docker Desktop lancé. `.gitattributes` force LF sur les `.sh`.
-- **macOS** : Docker Desktop (ou OrbStack) lancé ; `brew install jq` si absent.
+  push-main a un repli) : dis-le. Mode `docker` : Docker Desktop lancé. Mode `natif` :
+  `.venv\Scripts\activate` (pas `source`). `.gitattributes` force LF sur les `.sh`.
+- **macOS** : mode `docker` : Docker Desktop (ou OrbStack) lancé. `brew install jq` si absent.
 - **Playwright MCP** : au premier usage il télécharge le paquet puis Chromium (~150 Mo). Derrière un
   proxy d'entreprise ça peut échouer — c'est dans `docs/formation-prerequis.md` (à faire la veille).
-- **Ports pris** : `BACKEND_PORT=18000 FRONTEND_PORT=18080 VITE_API_URL=http://localhost:18000 docker compose up --build -d`,
-  puis note les ports dans `notes` et adapte toutes les URLs des modules suivants.
+- **Ports pris** :
+  - `docker` : `BACKEND_PORT=18000 FRONTEND_PORT=18080 VITE_API_URL=http://localhost:18000 docker compose up --build -d`.
+  - `natif` : `uvicorn app.main:app --reload --port 18000` (backend) et
+    `VITE_API_URL=http://localhost:18000 npm run dev -- --port 18080` (frontend).
+  - Dans les deux cas, note les ports dans `notes` et adapte toutes les URLs des modules suivants.

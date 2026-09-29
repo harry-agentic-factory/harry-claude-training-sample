@@ -8,7 +8,8 @@ navigateur) et `github`. Portée : `.mcp.json` (projet, commité, partagé équi
 (global) · `--mcp-config` (session, éphémère).
 
 ## Pas 1/1 — Piloter le navigateur en interactif
-**Exercice (tous)** : l'app tourne. Tape le prompt de la fiche :
+**Exercice (tous)** : l'app tourne. Tape le prompt de la fiche (adapte le port à ton mode — 8080 en
+docker, 5173 en natif) :
 > Ouvre http://localhost:8080, ajoute une tâche "Acheter du café", coche-la, puis clique le filtre "Actives" et vérifie qu'elle disparaît.
 
 Observe les appels `mcp__playwright__browser_navigate` / `_type` / `_click` / `_snapshot`.
