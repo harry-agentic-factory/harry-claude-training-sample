@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suivi de formation</title>
+<style>
+  :root {
+    --bg: #f6f7fb; --card: #ffffff; --ink: #1d2433; --muted: #6a7389; --line: #d9deea;
+    --blue: #304870; --rose: #c187a1; --ok: #304870; --warn: #b7791f;
+    --font: "Open Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151c; --card: #1b2030; --ink: #e8ebf4; --muted: #98a2bb; --line: #2b3347;
+      --blue: #7f9ad0; --ok: #7f9ad0; --warn: #e0b04a;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151c; --card: #1b2030; --ink: #e8ebf4; --muted: #98a2bb; --line: #2b3347;
+    --blue: #7f9ad0; --ok: #7f9ad0; --warn: #e0b04a;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 15px/1.55 var(--font); }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 24px 16px 48px; }
+  header { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; margin-bottom: 20px; }
+  .ring { width: 84px; height: 84px; flex: none; }
+  .ring text { font: 700 18px var(--font); fill: var(--ink); }
+  h1 { margin: 0; font-size: 22px; }
+  .sub { color: var(--muted); margin-top: 2px; }
+  .badge { display: inline-block; padding: 1px 10px; border-radius: 999px; font-size: 12px; font-weight: 600;
+           border: 1px solid var(--line); color: var(--muted); }
+  .badge.demo { color: var(--warn); border-color: var(--warn); }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12.5px; color: var(--muted); margin: 6px 0 14px; }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+  #snake { position: relative; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+  #snake svg { position: absolute; inset: 0; pointer-events: none; }
+  .node { position: absolute; width: 96px; margin-left: -48px; text-align: center; background: none; border: 0;
+          cursor: pointer; font: inherit; color: var(--ink); padding: 0; }
+  .node .dot { width: 46px; height: 46px; margin: 0 auto 4px; border-radius: 50%; display: grid; place-items: center;
+               font-weight: 700; border: 2px solid var(--line); background: var(--card); color: var(--muted); }
+  .node .lbl { font-size: 11.5px; line-height: 1.25; color: var(--muted); display: block; }
+  .node:hover .dot, .node:focus-visible .dot { border-color: var(--rose); outline: none; }
+  .node.sel .lbl { color: var(--ink); font-weight: 600; }
+  .node.done .dot { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .node.current .dot { background: var(--rose); border-color: var(--rose); color: #fff; animation: pulse 2s infinite; }
+  .node.skipped .dot { border-style: dashed; border-color: var(--warn); color: var(--warn); }
+  .node.optional .dot { border-style: dotted; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(193,135,161,.55); } 70% { box-shadow: 0 0 0 12px rgba(193,135,161,0); } 100% { box-shadow: 0 0 0 0 rgba(193,135,161,0); } }
+  @media (prefers-reduced-motion: reduce) { .node.current .dot { animation: none; } }
+  #panel { margin-top: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  #panel h2 { margin: 0 0 4px; font-size: 18px; }
+  #panel h3 { margin: 18px 0 4px; font-size: 14px; color: var(--blue); }
+  #panel .meta { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
+  #panel code { background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: 13px; }
+  #panel pre { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 10px; overflow-x: auto; }
+  #panel pre code { border: 0; padding: 0; }
+  #panel blockquote { margin: 8px 0; padding: 6px 12px; border-left: 3px solid var(--rose); background: var(--bg); border-radius: 0 6px 6px 0; }
+  #panel p { margin: 6px 0; }
+  .notes { margin-top: 14px; color: var(--muted); font-size: 13px; }
+  .theme { margin-left: auto; background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 8px; padding: 4px 10px; cursor: pointer; font: inherit; font-size: 12.5px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <svg class="ring" viewBox="0 0 84 84" aria-hidden="true">
+      <circle cx="42" cy="42" r="36" fill="none" stroke="var(--line)" stroke-width="8"/>
+      <circle id="ringArc" cx="42" cy="42" r="36" fill="none" stroke="var(--rose)" stroke-width="8" stroke-linecap="round"
+              stroke-dasharray="0 226" transform="rotate(-90 42 42)"/>
+      <text id="ringTxt" x="42" y="48" text-anchor="middle">0%</text>
+    </svg>
+    <div>
+      <h1 id="title">Suivi de formation</h1>
+      <div class="sub" id="sub"></div>
+    </div>
+    <button class="theme" id="theme" type="button">Thème</button>
+  </header>
+  <div class="legend">
+    <span><i style="background:var(--ok)"></i>Fait</span>
+    <span><i style="background:var(--rose)"></i>En cours</span>
+    <span><i style="border:2px dashed var(--warn)"></i>Sauté</span>
+    <span><i style="border:2px dotted var(--muted)"></i>Optionnel</span>
+    <span><i style="border:2px solid var(--line)"></i>À faire</span>
+  </div>
+  <div id="snake" role="list" aria-label="Parcours de formation"></div>
+  <section id="panel" aria-live="polite"></section>
+  <div class="notes" id="notes"></div>
+</div>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+(function () {
+  var D = JSON.parse(document.getElementById("data").textContent);
+  var mods = D.modules.filter(function (m) { return m.path[D.profil] !== "out"; });
+  var cur = String(D.etape).split(".")[0].padStart(2, "0");
+
+  function state(m) {
+    if (D.faits[m.num]) return "done";
+    if (D.sautes.indexOf(m.num) >= 0) return "skipped";
+    if (m.num === cur) return "current";
+    if (m.path[D.profil] === "optional") return "optional";
+    return "todo";
+  }
+  var LABEL = { done: "Fait", current: "En cours", skipped: "Sauté", optional: "Optionnel", todo: "À faire" };
+
+  function esc(s) { return s.replace(/[&<>]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]; }); }
+  function inline(s) {
+    return esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+  }
+  function md(src) {
+    var out = "", para = [], code = null, list = false;
+    function flush() { if (para.length) { out += "<p>" + inline(para.join(" ")) + "</p>"; para = []; } }
+    function closeList() { if (list) { out += "</ul>"; list = false; } }
+    src.split("\n").forEach(function (line) {
+      if (code !== null) {
+        if (/^```/.test(line)) { out += "<pre><code>" + esc(code.join("\n")) + "</code></pre>"; code = null; }
+        else code.push(line);
+        return;
+      }
+      if (/^```/.test(line)) { flush(); closeList(); code = []; return; }
+      if (!line.trim()) { flush(); closeList(); return; }
+      if (/^>\s?/.test(line)) { flush(); closeList(); out += "<blockquote>" + inline(line.replace(/^>\s?/, "")) + "</blockquote>"; return; }
+      if (/^- /.test(line)) { flush(); if (!list) { out += "<ul>"; list = true; } out += "<li>" + inline(line.slice(2)) + "</li>"; return; }
+      para.push(line.trim());
+    });
+    flush(); closeList();
+    return out;
+  }
+
+  /* En-tête : anneau de progression et temps restant. */
+  var core = mods.filter(function (m) { return m.path[D.profil] === "in"; });
+  var done = core.filter(function (m) { return D.faits[m.num]; }).length;
+  var pct = core.length ? Math.round((done / core.length) * 100) : 0;
+  var left = core.filter(function (m) { return !D.faits[m.num] && D.sautes.indexOf(m.num) < 0; })
+                 .reduce(function (a, m) { return a + (m.minutes[D.profil] || 0); }, 0);
+  document.getElementById("ringArc").setAttribute("stroke-dasharray", (226 * pct / 100) + " 226");
+  document.getElementById("ringTxt").textContent = pct + "%";
+  document.getElementById("title").textContent = D.demo ? "Aperçu du parcours" : "Parcours de " + D.prenom;
+  var h = Math.floor(left / 60), mn = left % 60;
+  document.getElementById("sub").innerHTML =
+    "Profil <strong>" + esc(D.profil) + "</strong> · " + done + "/" + core.length + " modules faits · ≈ " +
+    (h ? h + " h " : "") + (mn ? mn + " min" : (h ? "" : "0 min")) + " restantes" +
+    (D.demo ? ' <span class="badge demo">aucune progression</span>' : "");
+
+  /* Serpent : les lignes alternent de sens, le tracé relie les centres. */
+  var snake = document.getElementById("snake"), sel = null;
+  var CELL_H = 112, PAD_Y = 30;
+  function layout() {
+    var w = snake.clientWidth, cols = w < 520 ? 3 : w < 820 ? 4 : 6;
+    var cellW = w / cols, rowsN = Math.ceil(mods.length / cols);
+    snake.style.height = (rowsN * CELL_H + PAD_Y) + "px";
+    var pts = [];
+    mods.forEach(function (m, i) {
+      var r = Math.floor(i / cols), c = r % 2 === 0 ? i % cols : cols - 1 - (i % cols);
+      var x = cellW * c + cellW / 2, y = PAD_Y / 2 + r * CELL_H + 23;
+      pts.push([x, y]);
+      var el = snake.querySelector('[data-num="' + m.num + '"]');
+      el.style.left = x + "px"; el.style.top = (y - 23) + "px";
+    });
+    var curIdx = -1;
+    mods.forEach(function (m, i) { var s = state(m); if (s === "done" || s === "current") curIdx = i; });
+    function poly(list) { return list.map(function (p, i) { return (i ? "L" : "M") + p[0] + " " + p[1]; }).join(" "); }
+    var svg = snake.querySelector("svg");
+    svg.setAttribute("viewBox", "0 0 " + w + " " + (rowsN * CELL_H + PAD_Y));
+    svg.innerHTML = '<path d="' + poly(pts) + '" fill="none" stroke="var(--line)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>' +
+      (curIdx > 0 ? '<path d="' + poly(pts.slice(0, curIdx + 1)) + '" fill="none" stroke="var(--rose)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>' : "");
+  }
+
+  snake.innerHTML = '<svg aria-hidden="true"></svg>' + mods.map(function (m) {
+    var s = state(m);
+    return '<button type="button" class="node ' + s + '" data-num="' + m.num + '" role="listitem" aria-label="Module ' + m.num + ' : ' + esc(m.title) + ', ' + LABEL[s] + '">' +
+      '<span class="dot">' + (s === "done" ? "✓" : m.num) + '</span><span class="lbl">' + esc(m.title) + '</span></button>';
+  }).join("");
+
+  function show(num) {
+    var m = mods.filter(function (x) { return x.num === num; })[0];
+    if (!m) return;
+    sel = num;
+    Array.prototype.forEach.call(snake.querySelectorAll(".node"), function (n) { n.classList.toggle("sel", n.dataset.num === num); });
+    var html = '<h2>Module ' + m.num + ' — ' + esc(m.title) + '</h2><div class="meta">' + LABEL[state(m)] +
+      (m.fiche ? ' · ' + esc(m.fiche) : '') + (m.minutes ? ' · ~' + m.minutes[D.profil] + ' min' : '') + '</div>';
+    if (m.concept) html += '<h3>Concept</h3>' + md(m.concept);
+    (m.steps || []).forEach(function (s) { html += '<h3>Pas ' + s.k + '/' + s.m + ' — ' + esc(s.title) + '</h3>' + md(s.md); });
+    if (m.retenir) html += '<h3>À retenir</h3>' + md(m.retenir);
+    if (m.question) html += '<h3>Question de contrôle</h3>' + md(m.question);
+    document.getElementById("panel").innerHTML = html;
+  }
+  snake.addEventListener("click", function (e) {
+    var n = e.target.closest(".node");
+    if (n) show(n.dataset.num);
+  });
+
+  document.getElementById("notes").textContent = D.notes.length ? "Notes du tuteur : " + D.notes.join(" · ") : "";
+  var t = document.getElementById("theme");
+  t.addEventListener("click", function () {
+    var root = document.documentElement, dark = getComputedStyle(root).getPropertyValue("--bg").trim() === "#12151c";
+    root.setAttribute("data-theme", dark ? "light" : "dark");
+  });
+  window.addEventListener("resize", layout);
+  layout();
+  show(mods.some(function (m) { return m.num === cur; }) ? cur : (mods[0] && mods[0].num));
+})();
+</script>
+</body>
+</html>
