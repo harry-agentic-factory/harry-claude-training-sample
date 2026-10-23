@@ -1,24 +1,29 @@
-# Module 17 — Le repo fil rouge & bilan
+# Module 17 — Le repo fil rouge et le bilan
 Fiche : §17 · Profils : tous · Durée : ~5 min
 
 ## Concept
-Tout ce que tu as manipulé existe en version complète dans `.claude/` : commands, agents, skills,
-rules, hooks, `.mcp.json`, et `CLAUDE.md` + `docs/`. C'est un **gabarit** : copie-le dans ton projet
-et adapte les conventions.
+Tout ce que tu as manipulé existe en version complète dans `.claude/` : commands, agents, skills, rules,
+hooks, `.mcp.json`, plus `CLAUDE.md` et `docs/`. C'est un **gabarit** : copie-le dans ton projet et adapte les
+conventions.
 
 ## Pas 1/1 — Bilan et emport
-**Exercice (tous)** : tape `/formation bilan`. Je récapitule : modules faits, sautés, temps
-passé, et les 3 choses à retenir de **ton** parcours. Puis choisis ton « premier pas » pour demain :
-- dev / techlead : « Copie `.claude/` (sans `formation.md` ni `formation-guide/`) dans mon projet X
-  et adapte `python-api` à notre stack. »
+<!-- tuteur : reste sous 200 mots même pour le bilan : modules faits, 3 points à retenir de SON parcours, un seul premier pas à choisir. Ne répète pas les modules précédents. -->
+
+**Cas concret** : lundi matin, sur ton vrai projet. Par quoi commences-tu ?
+
+**Exercice** : tape `/formation bilan`. Je récapitule les modules faits et sautés, le temps passé, et les 3
+choses à retenir de **ton** parcours. Puis choisis ton premier pas pour demain :
+- dev / techlead : « Copie `.claude/` (sans `formation.md` ni `formation-guide/`) dans mon projet X et adapte
+  `python-api` à notre stack. »
 - po : « Fais un `/scope` sur la prochaine feature de mon produit, dans un repo où le brain existe. »
+
 **Vérification** : tu as nommé un premier pas concret.
 
+Fichier clé : le dossier `.claude/` tout entier.
+
 ## À retenir
-La fiche explique, le repo fait pratiquer. Le `.claude/` est un gabarit réutilisable.
+La fiche explique, le repo fait pratiquer. Le dossier `.claude/` est un gabarit réutilisable.
 
 ## Nettoyage (optionnel)
-Mode docker : `docker compose down` (garde les données) · `docker compose down -v` (reset complet).
-Mode natif : `Ctrl+C` dans les deux terminaux (API + front) ; supprime `backend/todo.db` pour repartir
-de zéro.
-La branche `formation/<prenom>` peut rester, ou partir en PR pour montrer ton travail.
+Si l'app tourne, demande-moi de l'arrêter. Pour repartir d'une base vide, demande-moi d'archiver
+`backend/todo.db` dans `_toDelete/` plutôt que de le supprimer.

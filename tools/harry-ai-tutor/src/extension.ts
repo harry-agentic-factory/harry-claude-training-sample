@@ -4,6 +4,7 @@ import { ProgressStore } from "./progress";
 import { TerminalBridge } from "./terminal";
 import { ClaudeExtensionBridge, type Bridge } from "./claudeBridge";
 import { TutorViewProvider } from "./sidebarProvider";
+import { SuiviPanel } from "./suivi";
 import { FICHE_URL } from "./types";
 import { initLog, log } from "./log";
 
@@ -29,8 +30,12 @@ export async function activate(ctx: vscode.ExtensionContext) {
   };
   const bridge: Bridge = { get kind() { return pick().kind; }, start: () => pick().start(), send: (t) => pick().send(t) };
   const provider = new TutorViewProvider(ctx, store, bridge);
+  const suivi = new SuiviPanel(store);
   ctx.subscriptions.push(
-    store, terminal, out,
+    store, terminal, out, suivi,
+    vscode.commands.registerCommand("harryTutor.openSuivi", () => suivi.show()),
+    // Lien vscode://harington.harry-ai-tutor/suivi : le tuteur l'ouvre pour afficher le suivi dans VS Code.
+    vscode.window.registerUriHandler({ handleUri: (uri) => { if (uri.path === "/suivi") suivi.show(); } }),
     vscode.window.registerWebviewViewProvider("harryTutor.view", provider, { webviewOptions: { retainContextWhenHidden: true } }),
     vscode.commands.registerCommand("harryTutor.start", () => bridge.start()),
     vscode.commands.registerCommand("harryTutor.next", () => bridge.send("/formation suivant")),

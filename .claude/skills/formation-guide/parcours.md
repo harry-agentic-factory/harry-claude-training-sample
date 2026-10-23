@@ -2,13 +2,13 @@
 
 | Module | Titre | dev | po | techlead | Durée dev / po (min) |
 |---|---|:-:|:-:|:-:|---|
-| 00 | Préparation | ✅ 3 pas | ✅ 3 pas | ✅ 3 pas | 15 / 15 |
+| 00 | Démarrage | ✅ | ✅ | ✅ | 5 / 5 |
 | 01 | Un LLM, un copilot | ✅ | ✅ | ✅ | 10 / 10 |
 | 02 | Les acteurs | ○ | ✅ | ○ | 5 / 5 |
 | 03 | Se connecter | ✅ | ✅ | ✅ | 5 / 5 |
-| 04 | Les modes | ✅ 2 pas | ✅ pas 1 | ✅ 2 pas | 15 / 10 |
+| 04 | Les modes | ✅ 4 pas | ✅ pas 1 | ✅ 4 pas | 20 / 10 |
 | 05 | CLAUDE.md & memory | ✅ 2 pas | ✅ 2 pas | ✅ 2 pas | 15 / 15 |
-| 06 | settings / hooks / rules | ✅ 3 pas | ✅ pas 1 + question | ✅ 3 pas (+ rule) | 25 / 10 |
+| 06 | settings / hooks / rules | ✅ 4 pas | ✅ pas 1 + question | ✅ 4 pas (+ rule) | 30 / 10 |
 | 07 | Session | ✅ | ✅ | ✅ | 10 / 10 |
 | 08 | Modèle | ✅ | ✅ | ✅ | 5 / 5 |
 | 09 | Brain | ✅ pas 1 | ✅ pas 1 | ✅ 2 pas | 10 / 10 (techlead 20) |
@@ -24,13 +24,12 @@
 ✅ = dans le parcours · ○ = optionnel (proposé, jamais imposé).
 
 Totaux indicatifs, hors pauses et échanges avec le formateur :
-**dev ≈ 4 h** · **po ≈ 2 h 45** · **techlead ≈ 4 h 30**.
+**dev ≈ 3 h 50** · **po ≈ 2 h 35** · **techlead ≈ 4 h 20**.
 
 ## Ordre et prérequis
-Ordre numérique. Prérequis durs : **00** avant tout ; **00 pas 3** (app lancée, mode `docker` ou
-`natif` choisi à l'accueil) avant 11 et 13 ; **10** (feature cadrée) avant 11, 12 et 14, qui la
-réutilisent. Cas particulier : **module 11 pas 2** (agent `deployer`) reste Docker-only quel que soit
-le mode choisi au pas 00 — cf. `modules/11-agents.md`.
+Ordre numérique. Prérequis durs : **00** avant tout ; **10** (feature cadrée) avant 11, 12 et 14, qui la
+réutilisent. L'app (API + front) n'est lancée qu'à la demande, pour 10 pas 4, 11 pas 1 (po) et 13 :
+cf. « Lancer l'app à la demande » dans `SKILL.md`. Aucun module n'exige Docker.
 
 ## Mode formateur (synchro)
 Le formateur annonce « tout le monde tape `/formation 11` » : chacun saute au module 11 quel que soit

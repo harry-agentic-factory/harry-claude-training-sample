@@ -1,46 +1,50 @@
-# Module 11 — Agents (sous-agents)
+# Module 11 — Les agents
 Fiche : §11 · Profils : tous (po : pas 1) · Durée : ~15 min (po ~10)
 
 ## Concept
-Un agent = un worker au **contexte isolé** (sa fenêtre, ses tools, son modèle), défini dans
-`.claude/agents/<nom>.md`. Il repart de zéro et ne renvoie qu'un verdict. Command = un geste dans
-**ta** conversation ; agent = une mission déléguée avec **ses propres droits** (le reviewer ne peut
-rien modifier : `tools: Read, Grep, Glob`). Un agent ne peut pas appeler une slash command ; il peut
-appeler un outil MCP.
+Un **agent** est un assistant spécialisé, défini dans `.claude/agents/<nom>.md`. Il travaille dans **sa**
+conversation, avec **ses** droits (le `reviewer` ne peut que lire : `tools: Read, Grep, Glob`), puis te
+renvoie un verdict. Différence avec une command : une command est un prompt que **toi** tu lances dans ta
+conversation ; un agent travaille **à part**, avec ses propres droits, et te rend seulement un verdict.
 
-## Pas 1/2 — Déléguer une recette / une revue
-**Exercice (po)** : l'app tourne (module 00). Tape :
+## Pas 1/2 — Déléguer une revue ou une recette
+**Cas concret** : tu as fini une feature. Avant la PR, tu veux un regard neuf qui compare le code aux
+invariants de la spec, sans que ta conversation en soit polluée.
+
+**Exercice (po)** : demande-moi de lancer l'app (cf. SKILL.md), puis tape :
 > Lance l'agent tester sur TODO-1 (le filtre des tâches).
 
-Regarde : l'agent lit `docs/features/filtre-taches.md`, pilote le navigateur, rejoue, renvoie
-`{ pass, echecs }`. Toi, tu n'as rien fait — et ta conversation reste propre.
+L'agent lit `docs/features/filtre-taches.md`, pilote le navigateur et renvoie `{ pass, echecs }`. Si
+Playwright n'est pas connecté, il le dit : lance plutôt l'agent reviewer sur `docs/features/filtre-taches.md`.
 **Exercice (dev / techlead)** :
-> Lance l'agent reviewer sur le diff de ma branche par rapport à main, avec les invariants de docs/features/<slug>.md.
+> Liste les fichiers modifiés par mon dernier commit, puis lance l'agent reviewer sur ces fichiers avec les invariants de docs/features/<slug>.md.
 
-Lis le verdict `{ conforme, ecarts[] }`. Des écarts ? Corrige (ou fais corriger) et relance.
+(Le reviewer ne peut pas lancer `git` : il n'a que les outils de lecture. C'est donc Claude qui lui donne la liste des
+fichiers à relire.)
+
+Lis le verdict `{ conforme, ecarts[] }`. Des écarts ? Corrige et relance.
+
 **Vérification** : un verdict structuré est revenu dans la conversation.
 
+Fichier clé : `.claude/agents/reviewer.md`.
+
 ## Pas 2/2 — Le deployer et son mode — dev / techlead
-<!-- tuteur : ce pas exerce spécifiquement docker compose (agent deployer, Docker-only par design). Mode natif : dis-le avant de lancer l'exercice, propose l'alternative ci-dessous plutôt que de bloquer sur un échec. -->
-**Mode natif (sans Docker)** : cet agent build des images et pilote `docker compose` — impossible à
-exécuter sans Docker, quel que soit ton mode par ailleurs. Deux options : installer Docker juste pour
-ce pas (`docker --version` puis on relance), ou lire `.claude/agents/deployer.md` et la skill
-`local-deploy` avec moi (je les résume) sans les exécuter — je note ce pas en `sautes` avec la
-raison. **À toi de choisir.**
+**Cas concret** : le même agent doit déployer en local (sur ta machine) ou en remote (sur le serveur de l'équipe,
+hors périmètre de cette formation). Il ne doit jamais deviner lequel.
 
-**Exercice (mode docker)** : ouvre `.claude/agents/deployer.md` : le mode (`local` / `remote`) est
-donné **à l'appel** et choisit la skill. Tape :
-> Lance l'agent deployer en mode local.
+**Exercice** : ouvre `.claude/agents/deployer.md` et la skill `docker-deploy` ou `local-deploy`. Demande-moi
+de t'expliquer en 3 lignes comment le **mode** (`local` / `remote`) est donné à l'appel et ce qui se passe
+s'il manque. Ce pas se fait **en lecture** : aucun Docker n'est nécessaire. Si tu as Docker et que tu veux
+l'exécuter, tape « Lance l'agent deployer en mode local ».
 
-Il rebuild, relance, vérifie `docker compose ps` (healthy) et renvoie `{ mode, ok, tag, url }`.
-Réessaie **sans** préciser le mode : il doit **demander**, pas deviner.
-**Vérification** : je lance `docker compose ps` (healthy), et tu me confirmes que l'agent a demandé le mode.
+**Vérification** : tu me dis que l'agent doit **demander** le mode s'il n'est pas précisé.
+
+Fichier clé : `.claude/agents/deployer.md`.
 
 ## À retenir
-Agent = qui + droits, contexte neuf, verdict. L'état partagé passe par des fichiers (`docs/…`) ou le
-MCP, jamais par « la conversation ».
+Agent = qui + droits + contexte neuf + verdict. L'état partagé passe par des fichiers, jamais par la
+conversation.
 
 ## Question de contrôle (po)
 Q : pourquoi le reviewer n'a-t-il que Read / Grep / Glob ?
-Attendu : lecture seule = il ne peut rien casser ; et son jugement n'est pas pollué par la
-conversation principale.
+Attendu : lecture seule = il ne peut rien casser ; son jugement n'est pas pollué par la conversation.

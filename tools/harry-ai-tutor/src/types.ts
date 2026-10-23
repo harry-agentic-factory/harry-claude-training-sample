@@ -46,7 +46,7 @@ export interface TutorState {
 // Messages webview → extension
 export type WebviewMessage =
   | { type: "ready" }
-  | { type: "cmd"; cmd: "start" | "next" | "bilan" | "check" | "goto" | "reset"; arg?: string }
+  | { type: "cmd"; cmd: "start" | "next" | "bilan" | "check" | "goto" | "reset" | "suivi"; arg?: string }
   | { type: "open"; rel: string }
   | { type: "installClaude" }
   | { type: "showClaude" }

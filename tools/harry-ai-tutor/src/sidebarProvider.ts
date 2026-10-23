@@ -38,6 +38,7 @@ export class TutorViewProvider implements vscode.WebviewViewProvider {
         break;
       case "cmd":
         if (m.cmd === "reset") { await this.reset(); break; }
+        if (m.cmd === "suivi") { await vscode.commands.executeCommand("harryTutor.openSuivi"); break; }
         if ((m.cmd === "start" || m.cmd === "next" || m.cmd === "bilan" || m.cmd === "goto") && !(await this.claudeOrTerminalOk())) break;
         try {
           let r: SendResult | undefined; let text = "";
