@@ -6,9 +6,9 @@
 | 01 | Un LLM, un copilot | ✅ | ✅ | ✅ | 10 / 10 |
 | 02 | Les acteurs | ○ | ✅ | ○ | 5 / 5 |
 | 03 | Se connecter | ✅ | ✅ | ✅ | 5 / 5 |
-| 04 | Les modes | ✅ 2 pas | ✅ pas 1 | ✅ 2 pas | 15 / 10 |
+| 04 | Les modes | ✅ 4 pas | ✅ pas 1 | ✅ 4 pas | 20 / 10 |
 | 05 | CLAUDE.md & memory | ✅ 2 pas | ✅ 2 pas | ✅ 2 pas | 15 / 15 |
-| 06 | settings / hooks / rules | ✅ 3 pas | ✅ pas 1 + question | ✅ 3 pas (+ rule) | 25 / 10 |
+| 06 | settings / hooks / rules | ✅ 4 pas | ✅ pas 1 + question | ✅ 4 pas (+ rule) | 30 / 10 |
 | 07 | Session | ✅ | ✅ | ✅ | 10 / 10 |
 | 08 | Modèle | ✅ | ✅ | ✅ | 5 / 5 |
 | 09 | Brain | ✅ pas 1 | ✅ pas 1 | ✅ 2 pas | 10 / 10 (techlead 20) |

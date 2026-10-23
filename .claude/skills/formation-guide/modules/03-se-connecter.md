@@ -2,21 +2,24 @@
 Fiche : §3 · Profils : tous · Durée : ~5 min
 
 ## Concept
-Claude Code marche en terminal (`claude`), dans VS Code / JetBrains, en desktop et sur le web, avec **la même
-config** (dossier `~/.claude/`). On se connecte par abonnement (`/login`) ou par clé API
-(`ANTHROPIC_API_KEY`, qui **prime** si elle existe). Une clé ne se commit jamais.
+Claude Code marche en terminal (`claude`), dans VS Code ou JetBrains, en application desktop et sur le web, avec
+**la même configuration** (le dossier `~/.claude/`). On s'y connecte avec un abonnement (`/login`) ou une clé API.
 
 ## Pas 1/1 — Où suis-je ?
-**Cas concret** : Claude répond autrement que chez ton collègue. Première question : quel compte, quel
-modèle, quel dossier ?
+<!-- tuteur : indices — 1) « Une commande qui commence par `/` te dit où tu en es. » 2) « C'est `/status`. » 3) « Cherche la ligne du modèle ; sinon ouvre `.claude/settings.json`, clé `model`. » -->
+**Cas concret** : Claude répond autrement que chez ton collègue. Première question : avec quel compte, quel modèle,
+dans quel dossier travaille-t-il ?
 
-**Exercice** : tape `/status`. Repère la version, le compte, le modèle courant et le dossier de travail.
-Puis tape `/model` et note le modèle par défaut du repo (fixé par `.claude/settings.json`).
+**Avant de lancer** : devine quel **modèle** (le « cerveau » de Claude, par exemple sonnet) est utilisé ici.
 
-**Vérification** : tu me donnes le modèle courant (attendu : sonnet, sauf si tu l'as changé).
+**Exercice** : tape `/status` dans la conversation. Il affiche la version, ton compte, le modèle courant et le
+dossier de travail.
 
-Fichier à ouvrir : `.claude/settings.json` (clé `model`).
+**Vérification** : tu me donnes le modèle affiché (attendu : sonnet, sauf si tu l'as changé) et tu me dis si ton
+pari était bon.
+
+Fichier à ouvrir pour comparer : `.claude/settings.json` (clé `model`).
 
 ## À retenir
-Une seule config pour toutes les surfaces. Une `ANTHROPIC_API_KEY` oubliée dans l'environnement prime sur
-ton abonnement.
+Une seule configuration pour toutes les surfaces. Si une variable `ANTHROPIC_API_KEY` traîne dans ton environnement,
+elle passe avant ton abonnement : `/status` te montre ce qui est vraiment utilisé.

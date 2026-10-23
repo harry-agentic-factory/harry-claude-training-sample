@@ -7,6 +7,8 @@ exécutait une instruction ; l'humain a dit stop et en a fait un hook), ni **pou
 comment). L'IA est un multiplicateur : sans expérience ni jugement à multiplier, il ne vaut rien.
 
 ## Pas 1/1 — Ton « stop »
+<!-- tuteur : reste sous 160 mots. Pas de rappel de tout le parcours. Pose une seule question. -->
+
 **Cas concret** : dans ton travail, il y a une action qu'aucune IA ne doit faire seule : supprimer des
 données, publier, payer, écrire à un client.
 

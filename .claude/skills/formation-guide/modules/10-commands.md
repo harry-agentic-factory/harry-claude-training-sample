@@ -6,6 +6,9 @@ Une **command** est un fichier `.claude/commands/<nom>.md` : un prompt réutilis
 lances en tapant `/<nom>`. Elle s'exécute **dans ta conversation**. Le cycle du repo : `/scope` (cadrer) →
 `/spec` (critères, plan, invariants) → `/implement` (coder) → `/test` (recetter). `/formation` en est une aussi.
 
+Trois termes : un **PRD** est un document de cadrage (ce qu'on fait, ce qu'on ne fait pas) ; un **critère
+d'acceptation** dit comment vérifier que c'est réussi ; un **invariant** est ce qui ne doit jamais casser.
+
 ## Pas 1/4 — Cadrer une idée (/scope)
 **Cas concret** : un client dit « je voudrais une échéance sur les tâches ». Avant de coder, on écrit ce qu'on
 va faire, et ce qu'on ne fait pas.
@@ -40,7 +43,8 @@ invariants.
 **Cas concret** : la spec est validée, on code, avec des tests à chaque étape.
 
 **Exercice** : tape `/implement`. Claude déroule le plan, lance les tests et `npm run build` à chaque
-étape, et fait un commit par étape. **Reste dans la boucle** : lis chaque diff avant d'accepter.
+étape, et fait un commit par étape. **Reste dans la boucle** : lis chaque diff avant d'accepter. Tu n'as pas à
+comprendre chaque ligne de code : l'essentiel est que les tests passent.
 
 **Vérification** : `git log --oneline -5` montre au moins un commit en Conventional Commits, et
 `pytest -q` passe dans `backend/` (avec le venv).

@@ -7,6 +7,8 @@ hooks, `.mcp.json`, plus `CLAUDE.md` et `docs/`. C'est un **gabarit** : copie-le
 conventions.
 
 ## Pas 1/1 — Bilan et emport
+<!-- tuteur : reste sous 200 mots même pour le bilan : modules faits, 3 points à retenir de SON parcours, un seul premier pas à choisir. Ne répète pas les modules précédents. -->
+
 **Cas concret** : lundi matin, sur ton vrai projet. Par quoi commences-tu ?
 
 **Exercice** : tape `/formation bilan`. Je récapitule les modules faits et sautés, le temps passé, et les 3

@@ -7,6 +7,8 @@ Le **contexte** est la mémoire de travail de la conversation : quand il sature,
 mécanisme, et **vérifier avant de croire** : un agent qui dit « corrigé » doit le prouver (tests, lancement réel).
 
 ## Pas 1/1 — Le contexte, une ressource
+<!-- tuteur : reste sous 160 mots. Résume `/context` en 2 lignes, sans recopier le tableau. Une seule chose à faire à la fois. -->
+
 **Cas concret** : après deux heures de travail, Claude se met à oublier tes consignes du début.
 
 **Exercice** : tape `/context` : combien reste-t-il, et qu'est-ce qui pèse (CLAUDE.md, rules, tools MCP,

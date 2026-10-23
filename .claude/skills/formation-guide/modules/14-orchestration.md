@@ -3,7 +3,7 @@ Fiche : §14 · Profils : tous · Durée : ~15 min
 
 ## Concept
 Un vrai chantier, ce sont plusieurs **stories avec dépendances** : le front attend le contrat du back. Il faut
-d'abord **cadrer et découper** (`/scope` → `/refine`, qui produit un graphe de dépendances, un **DAG**), puis
+d'abord **cadrer et découper** (`/scope` → `/refine`, qui produit un schéma montrant qui dépend de qui, appelé **DAG**), puis
 **orchestrer** : lancer les agents dans le bon ordre, en parallèle quand c'est indépendant, avec des validations
 humaines. Harry est la session qui orchestre ; les agents exécutent.
 

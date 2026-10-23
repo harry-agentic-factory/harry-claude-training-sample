@@ -3,7 +3,8 @@ Fiche : §13 · Profils : tous · Durée : ~15 min
 
 ## Concept
 **MCP** (Model Context Protocol) est le standard pour brancher Claude sur des outils externes : navigateur,
-GitHub, Jira, base de données. Un serveur expose des tools nommés `mcp__<serveur>__<tool>`. Ici `.mcp.json`
+GitHub, Jira, base de données. Un **serveur MCP** est un petit programme qui donne de nouveaux outils à Claude ;
+`playwright`, par exemple, pilote un vrai navigateur. Ses outils sont nommés `mcp__<serveur>__<tool>`. Ici `.mcp.json`
 déclare `playwright` (pilote un navigateur) et `github`. Ce fichier est commité : toute l'équipe a les mêmes
 outils.
 

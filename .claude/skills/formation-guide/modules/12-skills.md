@@ -10,10 +10,11 @@ contrairement à `CLAUDE.md` qui l'est toujours. Un agent dit **qui** et avec qu
 **Cas concret** : l'équipe décide que tout endpoint doit avoir une docstring. Tu ne veux pas réécrire chaque
 agent : tu ajoutes la règle à la skill qu'ils lisent tous.
 
-**Exercice (dev / techlead)** : ajoute une convention à `.claude/skills/python-api/SKILL.md` :
+**Exercice (dev / techlead)** : demande à Claude d'ajouter cette ligne à la fin de `.claude/skills/python-api/SKILL.md` :
 ```
 8. **Docstring** : tout endpoint a une docstring d'une ligne.
 ```
+Claude va te demander la permission d'écrire dans `.claude/` : c'est normal, c'est un dossier protégé. Choisis **Yes**.
 Relance le reviewer (module 11) : il signale maintenant les endpoints sans docstring, **sans que tu aies
 touché `reviewer.md`**.
 
