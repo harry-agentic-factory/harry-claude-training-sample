@@ -140,7 +140,7 @@ const renderClaudeMissing = () => `<section class="card warn enter">
 
 const renderFooter = () => view === "bilan"
   ? `<footer class="ft"><button class="btn primary big" data-act="parcours">◀ Retour au parcours</button></footer>`
-  : `<footer class="ft"><button class="btn primary big" data-act="next">Suivant ▶</button><button class="btn ghost" data-act="bilan">Bilan</button></footer>`;
+  : `<footer class="ft"><button class="btn primary big" data-act="next">Suivant ▶</button><button class="btn ghost" data-act="bilan">Bilan</button><button class="btn ghost" data-act="suivi" title="Ouvre le parcours en serpent dans un onglet">Suivi</button></footer>`;
 
 // ---------- bilan ----------
 const fmtMin = (min: number) => (min >= 60 ? `${Math.floor(min / 60)} h ${String(min % 60).padStart(2, "0")}` : `${min} min`);
@@ -241,6 +241,7 @@ app.addEventListener("click", (ev) => {
     case "start": post({ type: "cmd", cmd: "start" }); break;
     case "next": post({ type: "cmd", cmd: "next" }); break;
     case "bilan": view = "bilan"; render(); break;
+    case "suivi": post({ type: "cmd", cmd: "suivi" }); break;
     case "parcours": view = "parcours"; render(); break;
     case "bilan-harry": post({ type: "cmd", cmd: "bilan" }); break;
     case "reset": post({ type: "cmd", cmd: "reset" }); break;

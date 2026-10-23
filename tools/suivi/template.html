@@ -48,7 +48,49 @@
   .node.optional .dot { border-style: dotted; }
   @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(193,135,161,.55); } 70% { box-shadow: 0 0 0 12px rgba(193,135,161,0); } 100% { box-shadow: 0 0 0 0 rgba(193,135,161,0); } }
   @media (prefers-reduced-motion: reduce) { .node.current .dot { animation: none; } }
-  #panel { margin-top: 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 18px 20px; }
+  /* Détail d'un module : tiroir à droite (plein écran sur petit écran), sans défilement de la page. */
+  #backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); opacity: 0; pointer-events: none; transition: opacity .2s; z-index: 10; }
+  #backdrop.open { opacity: 1; pointer-events: auto; }
+  #panel { position: fixed; top: 0; right: 0; bottom: 0; width: min(560px, 100%); z-index: 11; display: flex; flex-direction: column; overflow: hidden;
+           background: var(--card); border-left: 1px solid var(--line); padding: 0;
+           box-shadow: -8px 0 24px rgba(0,0,0,.18); transform: translateX(105%); transition: transform .22s ease; }
+  #panel.open { transform: none; }
+  /* Poignée de tiroir : ‹ pour ouvrir (bord de l'écran), › pour fermer (bord du tiroir). */
+  #pull { position: fixed; top: 50%; right: 0; transform: translateY(-50%); z-index: 12; width: 28px; height: 64px;
+          border: 1px solid var(--line); border-right: 0; border-radius: 12px 0 0 12px; background: var(--card); color: var(--ink);
+          font-size: 22px; line-height: 1; cursor: pointer; box-shadow: -4px 0 12px rgba(0,0,0,.12); transition: right .22s ease; }
+  #pull.open { right: min(560px, 100%); }
+  #pull:hover { border-color: var(--rose); }
+  @media (max-width: 560px) { #pull.open { display: none; } }
+  @media (prefers-reduced-motion: reduce) { #pull { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { #panel, #backdrop { transition: none; } }
+  /* En-tête rose fixe : module + workflow + récap. Corps défilant. Pied fixe : la fiche. */
+  #panel .hd { flex: none; position: relative; background: var(--card); color: var(--ink); padding: 16px 22px 14px; border-bottom: 3px solid var(--rose); }
+  #panel .hd h2 { margin: 0 44px 2px 0; font-size: 18px; color: var(--ink); }
+  #panel .hd .meta { color: var(--muted); margin: 0 0 10px; }
+  #panel .close { position: absolute; top: 12px; right: 14px; width: 34px; height: 34px; border-radius: 50%;
+                  border: 1px solid var(--line); background: transparent; color: var(--ink); font-size: 20px; line-height: 1; cursor: pointer; }
+  #panel .close:hover { border-color: var(--rose); }
+  #panel .flow { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 10px; }
+  #panel .flow span { font-size: 11.5px; font-weight: 600; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--line); background: var(--bg); color: var(--muted); }
+  #panel .recap { background: var(--bg); border-left: 3px solid var(--rose); border-radius: 0 8px 8px 0; padding: 8px 10px; font-size: 13.5px; }
+  #panel .recap p { margin: 2px 0 0; }
+  #panel .recap code { background: var(--card); }
+  #panel .bd { flex: 1; overflow-y: auto; padding: 6px 22px 18px; }
+  #panel .blk { margin: 12px 0; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg); }
+  #panel .blk .tag { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  #panel .blk.k-exercice { border: 2px solid var(--rose); background: var(--card); }
+  #panel .blk.k-exercice .tag { color: var(--rose); }
+  #panel .blk.k-verification .tag { color: var(--blue); }
+  #panel .blk p { margin: 4px 0; }
+  #panel details { margin-top: 14px; }
+  #panel summary { cursor: pointer; font-weight: 600; color: var(--blue); }
+  #panel .ft { flex: none; display: flex; gap: 8px; padding: 12px 22px; border-top: 1px solid var(--line); background: var(--card); }
+  #panel .ft a { flex: 1; text-align: center; padding: 10px 14px; border-radius: 10px; background: var(--blue); color: var(--card); font-weight: 600; text-decoration: none; }
+  #panel .ft .nav { width: 46px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); font-size: 22px; line-height: 1; cursor: pointer; }
+  #panel .ft .nav:hover:not(:disabled) { border-color: var(--rose); }
+  #panel .ft .nav:disabled { opacity: .3; cursor: default; }
+  #panel .ft a:hover { filter: brightness(1.12); }
   #panel h2 { margin: 0 0 4px; font-size: 18px; }
   #panel h3 { margin: 18px 0 4px; font-size: 14px; color: var(--blue); }
   #panel .meta { color: var(--muted); font-size: 13px; margin-bottom: 8px; }
@@ -84,7 +126,9 @@
     <span><i style="border:2px solid var(--line)"></i>À faire</span>
   </div>
   <div id="snake" role="list" aria-label="Parcours de formation"></div>
-  <section id="panel" aria-live="polite"></section>
+  <div id="backdrop"></div>
+  <section id="panel" aria-live="polite" aria-label="Détail du module"></section>
+  <button id="pull" type="button" aria-label="Ouvrir le détail du module" title="Ouvrir / fermer le détail">‹</button>
   <div class="notes" id="notes"></div>
 </div>
 <script id="data" type="application/json">__DATA__</script>
@@ -93,6 +137,10 @@
   var D = JSON.parse(document.getElementById("data").textContent);
   var mods = D.modules.filter(function (m) { return m.path[D.profil] !== "out"; });
   var cur = String(D.etape).split(".")[0].padStart(2, "0");
+  /* Dans un onglet VS Code, suit le thème de l'éditeur. */
+  var bc = document.body.classList;
+  if (bc.contains("vscode-dark") || bc.contains("vscode-high-contrast")) document.documentElement.setAttribute("data-theme", "dark");
+  else if (bc.contains("vscode-light")) document.documentElement.setAttribute("data-theme", "light");
 
   function state(m) {
     if (D.faits[m.num]) return "done";
@@ -172,19 +220,77 @@
       '<span class="dot">' + (s === "done" ? "✓" : m.num) + '</span><span class="lbl">' + esc(m.title) + '</span></button>';
   }).join("");
 
+  var FICHE = "https://training.harington.fr/formation/fiche_prise_en_main_claude.html";
+  var FLOW = ["Concept", "Cas concret", "Exercice", "Vérification", "À retenir"];
+  var KIND = { "Cas concret": "cas", "Exercice": "exercice", "Vérification": "verification", "Si ça bloque": "blocage", "Fichier clé": "fichier" };
+  /* Découpe le texte d'un pas en blocs étiquetés (cas concret, exercice, vérification, fichier clé). */
+  function steps(src) {
+    var blocks = [], cur = null;
+    src.split("\n").forEach(function (line) {
+      var m = line.match(/^\*\*(Cas concret|Exercice|Vérification|Si ça bloque)[^*]*\*\*\s*:\s*(.*)$/);
+      var f = /^Fichiers? (clés?|à ouvrir)/.test(line);
+      if (m || f) { cur = { kind: m ? m[1] : "Fichier clé", body: [m ? m[2] : line] }; blocks.push(cur); }
+      else if (cur) cur.body.push(line);
+      else { cur = { kind: "", body: [line] }; blocks.push(cur); }
+    });
+    return blocks.map(function (b) {
+      var inner = md(b.body.join("\n"));
+      if (!inner) return "";
+      return b.kind ? '<div class="blk k-' + KIND[b.kind] + '"><div class="tag">' + b.kind + "</div>" + inner + "</div>" : inner;
+    }).join("");
+  }
   function show(num) {
     var m = mods.filter(function (x) { return x.num === num; })[0];
     if (!m) return;
     sel = num;
     Array.prototype.forEach.call(snake.querySelectorAll(".node"), function (n) { n.classList.toggle("sel", n.dataset.num === num); });
-    var html = '<h2>Module ' + m.num + ' — ' + esc(m.title) + '</h2><div class="meta">' + LABEL[state(m)] +
-      (m.fiche ? ' · ' + esc(m.fiche) : '') + (m.minutes ? ' · ~' + m.minutes[D.profil] + ' min' : '') + '</div>';
-    if (m.concept) html += '<h3>Concept</h3>' + md(m.concept);
-    (m.steps || []).forEach(function (s) { html += '<h3>Pas ' + s.k + '/' + s.m + ' — ' + esc(s.title) + '</h3>' + md(s.md); });
-    if (m.retenir) html += '<h3>À retenir</h3>' + md(m.retenir);
-    if (m.question) html += '<h3>Question de contrôle</h3>' + md(m.question);
-    document.getElementById("panel").innerHTML = html;
+    var hd = '<div class="hd"><button type="button" class="close" aria-label="Fermer le détail">›</button>' +
+      '<h2>Module ' + m.num + ' — ' + esc(m.title) + '</h2><div class="meta">' + LABEL[state(m)] +
+      (m.fiche ? ' · ' + esc(m.fiche) : '') + (m.minutes ? ' · ~' + m.minutes[D.profil] + ' min' : '') + '</div>' +
+      '<div class="flow">' + FLOW.map(function (f) { return "<span>" + f + "</span>"; }).join("") + '</div>' +
+      (m.retenir ? '<div class="recap"><strong>À retenir</strong>' + md(m.retenir) + '</div>' : '') + '</div>';
+    var bd = "";
+    if (m.concept) bd += '<h3>Concept</h3>' + md(m.concept);
+    (m.steps || []).forEach(function (s) { bd += '<h3>Pas ' + s.k + '/' + s.m + ' — ' + esc(s.title) + '</h3>' + steps(s.md); });
+    if (m.question) bd += '<details><summary>Question de contrôle</summary>' + md(m.question) + '</details>';
+    var i = mods.indexOf(m), prev = mods[i - 1], next = mods[i + 1];
+    var ft = '<div class="ft">' +
+      '<button type="button" class="nav" data-go="' + (prev ? prev.num : "") + '"' + (prev ? "" : " disabled") + ' aria-label="Module précédent" title="Module précédent">‹</button>' +
+      '<a href="' + FICHE + '" target="_blank" rel="noopener">📖 Ouvrir la fiche' + (m.fiche ? ' — ' + esc(m.fiche) : '') + '</a>' +
+      '<button type="button" class="nav" data-go="' + (next ? next.num : "") + '"' + (next ? "" : " disabled") + ' aria-label="Module suivant" title="Module suivant">›</button></div>';
+    var panel = document.getElementById("panel");
+    panel.innerHTML = hd + '<div class="bd">' + bd + '</div>' + ft;
+    panel.querySelector(".bd").scrollTop = 0;
+    panel.classList.add("open");
+    document.getElementById("backdrop").classList.add("open");
+    var pull = document.getElementById("pull");
+    pull.classList.add("open"); pull.textContent = "›"; pull.setAttribute("aria-label", "Fermer le détail du module");
   }
+  function closePanel() {
+    document.getElementById("panel").classList.remove("open");
+    document.getElementById("backdrop").classList.remove("open");
+    Array.prototype.forEach.call(snake.querySelectorAll(".node"), function (n) { n.classList.remove("sel"); });
+    var pull = document.getElementById("pull");
+    pull.classList.remove("open"); pull.textContent = "‹"; pull.setAttribute("aria-label", "Ouvrir le détail du module");
+  }
+  /* La poignée ouvre le dernier module consulté, sinon le module en cours, sinon le premier. */
+  document.getElementById("pull").addEventListener("click", function () {
+    if (document.getElementById("panel").classList.contains("open")) { closePanel(); return; }
+    var has = function (n) { return mods.some(function (m) { return m.num === n; }); };
+    show(sel && has(sel) ? sel : has(cur) ? cur : mods[0].num);
+  });
+  document.getElementById("panel").addEventListener("click", function (e) {
+    if (e.target.closest(".close")) { closePanel(); return; }
+    var nav = e.target.closest(".nav");
+    if (nav && nav.dataset.go) show(nav.dataset.go);
+  });
+  document.getElementById("backdrop").addEventListener("click", closePanel);
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") { closePanel(); return; }
+    if (!document.getElementById("panel").classList.contains("open")) return;
+    var b = document.querySelector('#panel .nav[aria-label="' + (e.key === "ArrowLeft" ? "Module précédent" : "Module suivant") + '"]');
+    if ((e.key === "ArrowLeft" || e.key === "ArrowRight") && b && b.dataset.go) show(b.dataset.go);
+  });
   snake.addEventListener("click", function (e) {
     var n = e.target.closest(".node");
     if (n) show(n.dataset.num);
@@ -198,7 +304,6 @@
   });
   window.addEventListener("resize", layout);
   layout();
-  show(mods.some(function (m) { return m.num === cur; }) ? cur : (mods[0] && mods[0].num));
 })();
 </script>
 </body>

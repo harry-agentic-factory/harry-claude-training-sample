@@ -2,7 +2,7 @@
   "name": "harry-ai-tutor",
   "displayName": "Harry AI Tutor",
   "description": "Compagnon VS Code du tuteur /formation (Claude Code) : carte de progression animée, étape courante, ouverture des fichiers de l'étape, boutons Suivant / Bilan vers l'extension Claude Code.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "harington",
   "license": "MIT",
   "private": true,
@@ -57,6 +57,11 @@
       {
         "command": "harryTutor.bilan",
         "title": "Harry : bilan (/formation bilan)",
+        "category": "Harry"
+      },
+      {
+        "command": "harryTutor.openSuivi",
+        "title": "Harry : ouvrir le suivi (parcours en serpent)",
         "category": "Harry"
       },
       {
