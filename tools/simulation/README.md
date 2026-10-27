@@ -4,6 +4,10 @@ How to test the `/formation` tutor without a human: a **real tutor session** (he
 the repo) talks to a **simulated student** that answers in character and rates every tutor message. Built and tuned during
 the "clarity pass" of October 2026; the numbers below come from those runs.
 
+This is maintainer tooling. There is deliberately **no slash command** for it: anything in `.claude/commands/` is copied
+by trainees together with the harness (module 17), and they have no use for a simulation. Ask Claude directly ("run a
+simulation of module 6 and give me the feedback") and point it at this file.
+
 ## When to use it
 
 - After changing a module, `SKILL.md` or `/formation`: re-run only the modules you touched.
